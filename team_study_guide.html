@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Surveillance System — Team Study Guide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+
+        /* Header */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e3a5f 100%);
+            border-radius: 16px;
+            margin-bottom: 40px;
+            border: 1px solid #334155;
+        }
+        .hero h1 {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+        .hero p {
+            color: #94a3b8;
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Sections */
+        .section {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid #334155;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #93c5fd;
+            margin: 24px 0 12px 0;
+        }
+
+        p { margin-bottom: 12px; color: #cbd5e1; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        th {
+            background: #334155;
+            color: #f1f5f9;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 10px 16px;
+            border-bottom: 1px solid #334155;
+            color: #cbd5e1;
+        }
+        tr:hover td { background: #1e3a5f22; }
+
+        /* Code blocks */
+        code {
+            background: #334155;
+            color: #fbbf24;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+        }
+        pre {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+        pre code {
+            background: none;
+            color: #e2e8f0;
+            padding: 0;
+        }
+
+        /* Diagrams */
+        .diagram {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 16px 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            white-space: pre;
+            overflow-x: auto;
+            color: #93c5fd;
+        }
+
+        /* Flow diagram */
+        .flow {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .flow-step {
+            background: linear-gradient(135deg, #1e3a5f, #1e293b);
+            border: 1px solid #38bdf8;
+            border-radius: 10px;
+            padding: 14px 24px;
+            text-align: center;
+            min-width: 300px;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+        .flow-arrow {
+            color: #38bdf8;
+            font-size: 20px;
+        }
+
+        /* Callout boxes */
+        .callout {
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .callout.info {
+            background: #0c2d48;
+            border-left: 4px solid #38bdf8;
+        }
+        .callout.warning {
+            background: #422006;
+            border-left: 4px solid #f59e0b;
+        }
+        .callout .icon { font-size: 20px; flex-shrink: 0; }
+        .callout p { margin: 0; font-size: 14px; }
+
+        /* Lists */
+        ul, ol {
+            margin: 8px 0 16px 24px;
+            color: #cbd5e1;
+        }
+        li { margin-bottom: 6px; }
+
+        /* Architecture boxes */
+        .arch-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+        .arch-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .arch-box h4 {
+            color: #38bdf8;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .arch-box p { font-size: 13px; margin: 0; }
+
+        /* Phase cards */
+        .phase-card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 12px 0;
+        }
+        .phase-card .phase-num {
+            display: inline-block;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            color: #0f172a;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .phase-card h4 {
+            color: #f1f5f9;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        /* Sequence diagram */
+        .sequence {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 16px 0;
+        }
+        .seq-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 12px;
+            margin: 6px 0;
+            align-items: center;
+        }
+        .seq-actor {
+            font-weight: 600;
+            font-size: 13px;
+            text-align: right;
+        }
+        .seq-msg {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+        .seq-msg.right { border-left: 3px solid #38bdf8; }
+        .seq-msg.left { border-left: 3px solid #a78bfa; }
+        .seq-msg.note { border-left: 3px solid #fbbf24; background: #1c1917; }
+
+        /* ER Diagram */
+        .er-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .er-table {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .er-table .er-header {
+            background: linear-gradient(135deg, #1e3a5f, #312e81);
+            padding: 10px 16px;
+            font-weight: 700;
+            font-size: 14px;
+            color: #f1f5f9;
+        }
+        .er-table .er-fields {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-family: 'Fira Code', monospace;
+        }
+        .er-table .er-field {
+            padding: 3px 0;
+            color: #94a3b8;
+        }
+        .er-table .er-field .pk { color: #fbbf24; }
+        .er-table .er-field .fk { color: #a78bfa; }
+
+        @media (max-width: 700px) {
+            .arch-grid, .er-grid { grid-template-columns: 1fr; }
+            .container { padding: 16px; }
+            .hero { padding: 40px 16px; }
+            .hero h1 { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HERO -->
+    <div class="hero">
+        <h1>🚨 Road Surveillance System</h1>
+        <p>Complete team study guide — How the system works, technologies used, custom AI model, and the full request flow explained.</p>
+    </div>
+
+    <!-- 1. WHAT DOES IT DO -->
+    <div class="section">
+        <h2>📋 1. What Does This System Do?</h2>
+        <p>Our system is an <strong>AI-powered road surveillance platform</strong> that:</p>
+        <ol>
+            <li><strong>Detects anomalies</strong> — Automatically identifies <strong>traffic accidents</strong> and <strong>street fights</strong> from surveillance camera video feeds</li>
+            <li><strong>Reads license plates</strong> — When an accident is detected, it extracts the license plates of the vehicles involved using OCR</li>
+            <li><strong>Tracks vehicles</strong> — Searches across multiple camera feeds to find where a specific vehicle has been spotted</li>
+            <li><strong>Dashboard</strong> — Displays all incidents in a real-time web dashboard with snapshots, timelines, and vehicle routes</li>
+        </ol>
+    </div>
+
+    <!-- 2. ARCHITECTURE -->
+    <div class="section">
+        <h2>🏗️ 2. Architecture Overview</h2>
+        <p>The system consists of <strong>two servers</strong> running on different machines, connected via <strong>ngrok tunnels</strong>:</p>
+
+        <div class="arch-grid">
+            <div class="arch-box">
+                <h4>🐍 Django Server (Your PC)</h4>
+                <p>Web dashboard, user authentication, database (SQLite). Runs on <code>localhost:8000</code>. Exposed via ngrok.</p>
+            </div>
+            <div class="arch-box">
+                <h4>⚗️ Flask Server (Kaggle GPU)</h4>
+                <p>AI processing — YOLO detection, EasyOCR, vehicle tracking. Runs on port <code>5001</code>. Exposed via ngrok.</p>
+            </div>
+        </div>
+
+        <div class="diagram">┌──────────────────────────────────────────────────────────────┐
+│                     USER (Browser)                           │
+│          Dashboard │ Tracking │ Incident Details              │
+└──────────┬──────────────────────────────┬────────────────────┘
+           │                              │ (AJAX polling)
+           ▼                              ▼
+┌──────────────────────────────────────────────────────────────┐
+│                  DJANGO SERVER (Your PC)                      │
+│  • Dashboard page         • /api/incident/create/ (callback) │
+│  • Detection triggers     • /api/search/result/  (callback)  │
+│  • Tracking pages         • /api/check-status/   (polling)   │
+│  • SQLite Database        • /api/incidents/      (feed)      │
+└──────────┬────────────────────────────────┬──────────────────┘
+           │ (request via ngrok)            │ (callback POST)
+           ▼                                │
+┌──────────────────────────────────────────┴───────────────────┐
+│                KAGGLE SERVER (GPU)                            │
+│  Flask API endpoints:                                        │
+│  • /detect_incident_async  → 3-phase pipeline                │
+│  • /search                 → multi-camera plate search       │
+│                                                              │
+│  Models: custom YOLOv8 (best.pt) + YOLOv8m (tracking)       │
+│  Tools:  EasyOCR, OpenCV, NumPy, PyTorch                     │
+└──────────────────────────────────────────────────────────────┘</div>
+
+        <div class="callout info">
+            <span class="icon">💡</span>
+            <p><strong>Why two servers?</strong> The AI models (YOLOv8) need a GPU to run fast. Kaggle provides free GPUs. Django runs locally for the web interface. ngrok connects the two over the internet.</p>
+        </div>
+    </div>
+
+    <!-- 3. TECH STACK -->
+    <div class="section">
+        <h2>⚙️ 3. Technology Stack</h2>
+
+        <h3>Backend — Django (Local PC)</h3>
+        <table>
+            <tr><th>Technology</th><th>Purpose</th></tr>
+            <tr><td><code>Python 3.10+</code></td><td>Programming language</td></tr>
+            <tr><td><code>Django 5.2</code></td><td>Web framework (views, templates, ORM, admin panel)</td></tr>
+            <tr><td><code>Pillow</code></td><td>Image handling for saving snapshots</td></tr>
+            <tr><td><code>Requests</code></td><td>HTTP library for calling the Kaggle API</td></tr>
+            <tr><td><code>SQLite</code></td><td>Lightweight database (built into Django)</td></tr>
+        </table>
+
+        <h3>AI Backend — Flask (Kaggle GPU)</h3>
+        <table>
+            <tr><th>Technology</th><th>Purpose</th></tr>
+            <tr><td><code>PyTorch 2.2.2</code></td><td>Deep learning framework (runs the YOLO models)</td></tr>
+            <tr><td><code>Ultralytics YOLOv8</code></td><td>Object detection framework</td></tr>
+            <tr><td><code>EasyOCR 1.7.1</code></td><td>Optical Character Recognition for license plates</td></tr>
+            <tr><td><code>OpenCV 4.10</code></td><td>Computer vision — image/video processing</td></tr>
+            <tr><td><code>Flask 3.0.3</code></td><td>Lightweight web server for API endpoints</td></tr>
+            <tr><td><code>pyngrok</code></td><td>Python wrapper for ngrok tunneling</td></tr>
+        </table>
+
+        <h3>Frontend</h3>
+        <table>
+            <tr><th>Technology</th><th>Purpose</th></tr>
+            <tr><td>HTML / CSS</td><td>Dashboard UI (no framework, pure HTML)</td></tr>
+            <tr><td>JavaScript</td><td>AJAX polling for real-time updates</td></tr>
+            <tr><td>Bootstrap Icons</td><td>Icon library</td></tr>
+        </table>
+    </div>
+
+    <!-- 4. CUSTOM MODEL -->
+    <div class="section">
+        <h2>🤖 4. The Custom YOLO Model</h2>
+
+        <h3>What is YOLO?</h3>
+        <p><strong>YOLO</strong> (You Only Look Once) is a real-time object detection algorithm. It looks at an entire image in a single pass and predicts:</p>
+        <ul>
+            <li><strong>What</strong> objects are in the image (class: accident, fight, car, etc.)</li>
+            <li><strong>Where</strong> they are (bounding box coordinates)</li>
+            <li><strong>How confident</strong> the model is (0–100%)</li>
+        </ul>
+
+        <h3>Our Custom Model (<code>best.pt</code>)</h3>
+        <p>We <strong>fine-tuned</strong> a pre-trained YOLOv8 model to detect two specific classes:</p>
+        <table>
+            <tr><th>Class</th><th>Description</th></tr>
+            <tr><td><code>accident</code></td><td>Vehicle collision / crash scenes</td></tr>
+            <tr><td><code>fight</code></td><td>Street fights / physical altercations</td></tr>
+        </table>
+
+        <h3>How the Model Was Trained</h3>
+        <div class="flow">
+            <div class="flow-step">📸 <strong>Step 1:</strong> Collect images/videos of accidents and fights</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">🏷️ <strong>Step 2:</strong> Label/annotate images with bounding boxes (Roboflow / LabelImg)</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">🏋️ <strong>Step 3:</strong> Fine-tune YOLOv8m on labeled dataset (~100 epochs)</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">💾 <strong>Step 4:</strong> Export <code>best.pt</code> — the model weights with best accuracy</div>
+        </div>
+
+        <pre><code># Training command (simplified)
+from ultralytics import YOLO
+model = YOLO('yolov8m.pt')          # Start from pre-trained weights
+model.train(data='dataset.yaml', epochs=100, imgsz=640)
+# Output: best.pt</code></pre>
+
+        <h3>Two Models Used in the System</h3>
+        <table>
+            <tr><th>Model File</th><th>Type</th><th>What It Does</th></tr>
+            <tr><td><code>best.pt</code></td><td>Custom fine-tuned</td><td>Detects <strong>accidents</strong> and <strong>fights</strong></td></tr>
+            <tr><td><code>yolov8m.pt</code></td><td>Pre-trained (auto-downloaded)</td><td>Detects <strong>cars</strong> for plate extraction and tracking</td></tr>
+        </table>
+    </div>
+
+    <!-- 5. 3-PHASE PIPELINE -->
+    <div class="section">
+        <h2>🔬 5. The 3-Phase Detection Pipeline</h2>
+        <p>When you click <strong>"Run Accident Detection"</strong>, here's what happens:</p>
+
+        <div class="phase-card">
+            <span class="phase-num">PHASE 1</span>
+            <h4>Incident Detection</h4>
+            <p>The custom YOLO model scans each video frame and classifies it as accident, fight, or normal.</p>
+            <p>Uses a <strong>sliding window</strong> of 30 frames — an incident is confirmed only when <strong>15+ out of 30</strong> consecutive frames are positive. This prevents false alarms from a single noisy frame.</p>
+            <table>
+                <tr><th>Parameter</th><th>Value</th><th>Meaning</th></tr>
+                <tr><td><code>CONFIDENCE_THRESHOLD</code></td><td>0.60</td><td>Minimum 60% confidence to count a detection</td></tr>
+                <tr><td><code>DETECTION_WINDOW_SIZE</code></td><td>30</td><td>Rolling window of 30 frames</td></tr>
+                <tr><td><code>ACTIVATION_THRESHOLD</code></td><td>15</td><td>Need 15 positive frames to confirm</td></tr>
+            </table>
+        </div>
+
+        <div class="phase-card">
+            <span class="phase-num">PHASE 2</span>
+            <h4>License Plate Extraction (accidents only)</h4>
+            <p>Goes back <strong>4 seconds before the crash</strong>, finds cars near the impact zone, crops the bumper area, and runs OCR.</p>
+            <div class="flow">
+                <div class="flow-step">Go back 4 sec before crash</div>
+                <div class="flow-arrow">▼</div>
+                <div class="flow-step">Detect cars near impact zone (within 120px radius)</div>
+                <div class="flow-arrow">▼</div>
+                <div class="flow-step">Crop bottom 50% of car (bumper/plate area)</div>
+                <div class="flow-arrow">▼</div>
+                <div class="flow-step">Forensic upscale 3× + CLAHE contrast enhancement</div>
+                <div class="flow-arrow">▼</div>
+                <div class="flow-step">Skip blurry crops (Laplacian variance check)</div>
+                <div class="flow-arrow">▼</div>
+                <div class="flow-step">Run EasyOCR → Vote for most common plate text</div>
+            </div>
+        </div>
+
+        <div class="phase-card">
+            <span class="phase-num">PHASE 3</span>
+            <h4>Cross-Camera Vehicle Tracking</h4>
+            <p>For each detected plate, spawns <strong>one parallel thread per camera</strong> to search all feeds simultaneously. Uses <strong>fuzzy string matching</strong> (80% similarity threshold) to handle partial OCR reads.</p>
+        </div>
+    </div>
+
+    <!-- 6. ASYNC CALLBACK PATTERN -->
+    <div class="section">
+        <h2>🔄 6. The Async Callback Pattern</h2>
+        <p>AI processing takes 1–5 minutes, but web requests time out in 30 seconds. The solution:</p>
+
+        <div class="sequence">
+            <div class="seq-row">
+                <span class="seq-actor" style="color:#38bdf8;">👤 User</span>
+                <div class="seq-msg right">Clicks "Run Accident Detection"</div>
+            </div>
+            <div class="seq-row">
+                <span class="seq-actor" style="color:#a78bfa;">🐍 Django</span>
+                <div class="seq-msg left">Creates IncidentLog (is_processed = <strong>false</strong>)</div>
+            </div>
+            <div class="seq-row">
+                <span class="seq-actor" style="color:#a78bfa;">🐍 Django</span>
+                <div class="seq-msg left">Sends request to Kaggle in <strong>background thread</strong></div>
+            </div>
+            <div class="seq-row">
+                <span class="seq-actor" style="color:#a78bfa;">🐍 Django</span>
+                <div class="seq-msg left">Redirects user to <strong>loading page</strong> immediately</div>
+            </div>
+            <div class="seq-row">
+                <span class="seq-actor" style="color:#38bdf8;">👤 Browser</span>
+                <div class="seq-msg note">⏳ Loading page polls <code>/api/check-incident-status/</code> every 2 seconds</div>
+            </div>
+            <div class="seq-row">
+                <span class="seq-actor" style="color:#34d399;">⚗️ Kaggle</span>
+                <div class="seq-msg right">Processing video on GPU... (1–5 minutes)</div>
+            </div>
+            <div class="seq-row">
+                <span class="seq-actor" style="color:#34d399;">⚗️ Kaggle</span>
+                <div class="seq-msg right">POSTs results to <code>/api/incident/create/</code></div>
+            </div>
+            <div class="seq-row">
+                <span class="seq-actor" style="color:#a78bfa;">🐍 Django</span>
+                <div class="seq-msg left">Saves Incident + Vehicles to database, sets is_processed = <strong>true</strong></div>
+            </div>
+            <div class="seq-row">
+                <span class="seq-actor" style="color:#38bdf8;">👤 Browser</span>
+                <div class="seq-msg note">✅ Next poll sees is_processed = true → Auto-redirects to dashboard</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. DATABASE -->
+    <div class="section">
+        <h2>🗄️ 7. Database Models</h2>
+        <p>5 tables defined in <code>models.py</code>:</p>
+
+        <div class="er-grid">
+            <div class="er-table">
+                <div class="er-header">📌 Incident</div>
+                <div class="er-fields">
+                    <div class="er-field"><span class="pk">🔑 id</span> (PK)</div>
+                    <div class="er-field">incident_type (accident/fight)</div>
+                    <div class="er-field">location</div>
+                    <div class="er-field">status (new/processing/completed)</div>
+                    <div class="er-field">snapshot (image)</div>
+                    <div class="er-field">resolved (bool)</div>
+                    <div class="er-field">detected_at (datetime)</div>
+                </div>
+            </div>
+            <div class="er-table">
+                <div class="er-header">🚗 Vehicle</div>
+                <div class="er-fields">
+                    <div class="er-field"><span class="pk">🔑 id</span> (PK)</div>
+                    <div class="er-field">license_plate</div>
+                    <div class="er-field">detection_confidence</div>
+                    <div class="er-field"><span class="fk">→ incident_id</span> (FK)</div>
+                    <div class="er-field"><span class="fk">→ search_log_id</span> (FK)</div>
+                </div>
+            </div>
+            <div class="er-table">
+                <div class="er-header">📷 VehicleDetection</div>
+                <div class="er-fields">
+                    <div class="er-field"><span class="pk">🔑 id</span> (PK)</div>
+                    <div class="er-field"><span class="fk">→ vehicle_id</span> (FK)</div>
+                    <div class="er-field">camera_name</div>
+                    <div class="er-field">camera_location</div>
+                    <div class="er-field">timestamp</div>
+                    <div class="er-field">matched_text</div>
+                    <div class="er-field">snapshot (image)</div>
+                </div>
+            </div>
+            <div class="er-table">
+                <div class="er-header">🔍 SearchLog</div>
+                <div class="er-fields">
+                    <div class="er-field"><span class="pk">🔑 id</span> (PK)</div>
+                    <div class="er-field">license_plate</div>
+                    <div class="er-field">is_processed (bool)</div>
+                    <div class="er-field">searched_at (datetime)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="er-table" style="max-width: 400px; margin-top: 12px;">
+            <div class="er-header">📝 IncidentLog</div>
+            <div class="er-fields">
+                <div class="er-field"><span class="pk">🔑 id</span> (PK)</div>
+                <div class="er-field">video_path</div>
+                <div class="er-field">is_processed (bool)</div>
+                <div class="er-field">created_at (datetime)</div>
+            </div>
+        </div>
+
+        <h3>Relationships</h3>
+        <ul>
+            <li>One <strong>Incident</strong> can have many <strong>Vehicles</strong></li>
+            <li>One <strong>SearchLog</strong> can have many <strong>Vehicles</strong></li>
+            <li>One <strong>Vehicle</strong> can have many <strong>VehicleDetections</strong> (sightings across cameras)</li>
+        </ul>
+    </div>
+
+    <!-- 8. FILE STRUCTURE -->
+    <div class="section">
+        <h2>📁 8. Project Files — What Each File Does</h2>
+
+        <h3>Django Project (<code>SurveillanceProject/</code>)</h3>
+        <table>
+            <tr><th>File</th><th>Purpose</th></tr>
+            <tr><td><code>settings.py</code></td><td>Config — <code>KAGGLE_API_URL</code>, <code>DJANGO_CALLBACK_URL</code>, database, installed apps</td></tr>
+            <tr><td><code>urls.py</code></td><td>Root URL routing — includes app URLs + admin + logout</td></tr>
+        </table>
+
+        <h3>Django App (<code>SurveillanceApp/</code>)</h3>
+        <table>
+            <tr><th>File</th><th>Purpose</th></tr>
+            <tr><td><code>models.py</code></td><td>Database models (5 tables)</td></tr>
+            <tr><td><code>views.py</code></td><td>Page views — dashboard, detection triggers, tracking, processing pages</td></tr>
+            <tr><td><code>api_views.py</code></td><td>REST APIs — callbacks from Kaggle, polling endpoints, incident resolution</td></tr>
+            <tr><td><code>urls.py</code></td><td>URL routing for all pages and APIs</td></tr>
+            <tr><td><code>admin.py</code></td><td>Django admin panel configuration</td></tr>
+        </table>
+
+        <h3>Templates (<code>templates/surveillance/</code>)</h3>
+        <table>
+            <tr><th>Template</th><th>Page</th></tr>
+            <tr><td><code>login.html</code></td><td>Login page</td></tr>
+            <tr><td><code>dashboard.html</code></td><td>Main dashboard — stats, incident list, detection buttons</td></tr>
+            <tr><td><code>details.html</code></td><td>Incident detail — snapshot + vehicle routes</td></tr>
+            <tr><td><code>vehicle-tracking.html</code></td><td>License plate search form</td></tr>
+            <tr><td><code>processing.html</code></td><td>Loading page (vehicle tracking)</td></tr>
+            <tr><td><code>processing_incident.html</code></td><td>Loading page (anomaly detection)</td></tr>
+            <tr><td><code>tracking-result.html</code></td><td>Tracking results + camera timeline</td></tr>
+        </table>
+
+        <h3>Kaggle Notebook</h3>
+        <table>
+            <tr><th>File</th><th>Purpose</th></tr>
+            <tr><td><code>new-api.ipynb</code></td><td>Complete Kaggle server — Flask API + YOLO + OCR + tracking</td></tr>
+        </table>
+    </div>
+
+    <!-- 9. URL ROUTING -->
+    <div class="section">
+        <h2>🌐 9. All URL Endpoints</h2>
+
+        <h3>Pages (require login)</h3>
+        <table>
+            <tr><th>URL</th><th>What It Shows</th></tr>
+            <tr><td><code>/</code></td><td>Main dashboard</td></tr>
+            <tr><td><code>/login/</code></td><td>Login form</td></tr>
+            <tr><td><code>/anomaly-detection/</code></td><td>Triggers accident detection (POST)</td></tr>
+            <tr><td><code>/fight-anomaly-detection/</code></td><td>Triggers fight detection (POST)</td></tr>
+            <tr><td><code>/incident/&lt;id&gt;/</code></td><td>Single incident details</td></tr>
+            <tr><td><code>/tracking/</code></td><td>Vehicle search form</td></tr>
+            <tr><td><code>/tracking/&lt;id&gt;/</code></td><td>Tracking results</td></tr>
+        </table>
+
+        <h3>APIs</h3>
+        <table>
+            <tr><th>URL</th><th>Method</th><th>Purpose</th></tr>
+            <tr><td><code>/api/incident/create/</code></td><td>POST</td><td>📩 <strong>Callback</strong> — Kaggle posts incident results here</td></tr>
+            <tr><td><code>/api/search/result/</code></td><td>POST</td><td>📩 <strong>Callback</strong> — Kaggle posts search results here</td></tr>
+            <tr><td><code>/api/check-incident-status/&lt;id&gt;/</code></td><td>GET</td><td>⏳ <strong>Polling</strong> — Is detection done?</td></tr>
+            <tr><td><code>/api/check-status/&lt;id&gt;/</code></td><td>GET</td><td>⏳ <strong>Polling</strong> — Is tracking done?</td></tr>
+            <tr><td><code>/api/incidents/</code></td><td>GET</td><td>📋 Get recent incidents list</td></tr>
+            <tr><td><code>/api/incident/&lt;id&gt;/resolve/</code></td><td>POST</td><td>✅ Mark incident as resolved</td></tr>
+        </table>
+    </div>
+
+    <!-- 10. KEY CONCEPTS -->
+    <div class="section">
+        <h2>🧠 10. Key Concepts to Understand</h2>
+
+        <h3>ngrok — Making local servers accessible</h3>
+        <p>ngrok creates a secure tunnel from the internet to your local machine. When you run <code>ngrok http 8000</code>, it gives you a public URL like <code>https://xxx.ngrok-free.dev</code> that forwards traffic to your <code>localhost:8000</code>.</p>
+
+        <h3>CSRF Exemption</h3>
+        <p>The callback APIs use <code>@csrf_exempt</code> because they receive POST requests from Kaggle (an external server), not from a browser with CSRF tokens.</p>
+
+        <h3>Background Threading</h3>
+        <p>Django uses <code>threading.Thread</code> to send requests to Kaggle without blocking the HTTP response. The thread is marked <code>daemon=True</code> so it auto-stops when Django shuts down.</p>
+
+        <h3>Forensic Upscaling</h3>
+        <p>License plates in surveillance footage are tiny. The system: crops the bumper area → upscales 3× with Lanczos interpolation → converts to grayscale → applies CLAHE (Contrast Limited Adaptive Histogram Equalization).</p>
+
+        <h3>Fuzzy String Matching</h3>
+        <p>OCR is imperfect — <code>845ZD5</code> vs <code>845ZDS</code>. The system uses <code>SequenceMatcher</code> with 80% similarity threshold to accept partial matches.</p>
+    </div>
+
+    <!-- 11. SETUP -->
+    <div class="section">
+        <h2>🚀 11. Quick Setup Cheat Sheet</h2>
+        <pre><code> 1.  cd Road-Surveillance
+ 2.  python -m venv SurveillanceEnv
+ 3.  SurveillanceEnv\Scripts\activate
+ 4.  pip install django pillow requests
+ 5.  python manage.py migrate
+ 6.  python manage.py createsuperuser
+ 7.  python manage.py runserver          ← Terminal 1
+ 8.  ngrok http 8000                     ← Terminal 2
+ 9.  Update DJANGO_CALLBACK_URL in settings.py
+10.  Set up Kaggle notebook (5 cells)
+11.  Update KAGGLE_API_URL in settings.py
+12.  Restart Django → Test at http://127.0.0.1:8000</code></pre>
+    </div>
+
+    <!-- 12. FAQ -->
+    <div class="section">
+        <h2>❓ 12. Common Questions</h2>
+
+        <h3>Q: Why not run everything on one server?</h3>
+        <p>The YOLO model needs a GPU. Kaggle provides free GPUs. Your PC likely doesn't have a powerful enough GPU.</p>
+
+        <h3>Q: Why does the ngrok URL change?</h3>
+        <p>Free ngrok accounts get a random URL each time. Paid accounts can get a fixed domain.</p>
+
+        <h3>Q: What happens if Kaggle times out?</h3>
+        <p>Kaggle notebooks auto-stop after ~12 hours. You need to re-run the cells. Django handles timeouts gracefully — if Kaggle doesn't respond, it marks logs as processed so the UI doesn't hang forever.</p>
+
+        <h3>Q: Can we add more cameras?</h3>
+        <p>Yes! Update the <code>CAMERA_FEEDS</code> dictionary in the Kaggle notebook with more video paths. The tracking system automatically spawns one thread per camera.</p>
+
+        <h3>Q: How accurate is the model?</h3>
+        <p>It depends on the training data quality. The sliding window (15/30 threshold) reduces false positives. You can tune <code>CONFIDENCE_THRESHOLD</code>, <code>DETECTION_WINDOW_SIZE</code>, and <code>ACTIVATION_THRESHOLD</code>.</p>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="text-align: center; padding: 40px; color: #64748b; font-size: 13px;">
+        Road Surveillance System — Team Study Guide<br>
+        For educational/research purposes
+    </div>
+
+</div>
+</body>
+</html>

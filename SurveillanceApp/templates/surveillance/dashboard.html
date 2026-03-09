@@ -1,0 +1,447 @@
+<!-- SurveillanceApp\templates\surveillance\dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Surveillance System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #2291c1 0%, #71baeb 20%, #71baeb 70%, #2291c1 100%);
+            color: Black;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .navbar-menu a {
+            color: black;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 7px;
+            transition: background 0.3s;
+        }
+
+        .navbar-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .navbar-menu a,
+        .navbar-menu .logout-form button {
+            color: black;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 7px;
+            margin-left: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .navbar-menu .logout-form {
+            display: inline;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 7px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+        }
+
+        .stat-icon.total {
+            background: linear-gradient(135deg, #71baeb 0%, #2291c1 30%, #2291c1 70%, #71baeb 90%, #2291c1 100%);
+        }
+
+        .stat-icon.accident {
+            background: linear-gradient(135deg, #71baeb 0%, #2291c1 30%, #2291c1 70%, #71baeb 90%, #2291c1 100%);
+        }
+
+        .stat-icon.fight {
+            background: linear-gradient(135deg, #71baeb 0%, #2291c1 30%, #2291c1 70%, #71baeb 90%, #2291c1 100%);
+        }
+
+        .stat-icon.new {
+            background: linear-gradient(135deg, #71baeb 0%, #2291c1 30%, #2291c1 70%, #71baeb 90%, #2291c1 100%);
+        }
+
+        .stat-info h3 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .incidents-section {
+            background: white;
+            border-radius: 7px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-header h2 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .refresh-btn {
+            padding: 10px 20px;
+            background: linear-gradient(235deg, #71ebb8 0%, #2bb081 30%, #2bb081 70%, #71ebb8 100%);
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .incident-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .incident-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 7px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .incident-card:hover {
+            border-color: #3486ca;
+            box-shadow: 0 3px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .incident-card.new {
+            border-left: 5px solid #43e97b;
+        }
+
+        .incident-info {
+            flex: 1;
+        }
+
+        .incident-type {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 13px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .incident-type.accident {
+            background: #fee;
+            color: #c33;
+        }
+
+        .incident-type.fight {
+            background: #eef;
+            color: #33c;
+        }
+
+        .incident-details {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .incident-details strong {
+            color: #333;
+        }
+
+        .incident-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 13px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-badge.new {
+            background: #43e97b;
+            color: white;
+        }
+
+        .status-badge.processing {
+            background: #ffa726;
+            color: white;
+        }
+
+        .status-badge.completed {
+            background: #667eea;
+            color: white;
+        }
+
+        .status-badge.reviewed {
+            background: #90a4ae;
+            color: white;
+        }
+
+        .view-btn {
+            padding: 10px 20px;
+            background: linear-gradient(195deg, #eb718e 0%, #c84747 30%, #c84747 70%, #eb718e 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .view-btn:hover {
+            background: #2291c1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            Surveillance System
+        </div>
+        <div class="navbar-menu">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'tracking' %}">Vehicle Tracking</a>
+            <form method="post" action="{% url 'logout' %}" class="logout-form">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon total"><i class="bi bi-bar-chart"></i></div>
+                <div class="stat-info">
+                    <h3>{{ stats.total }}</h3>
+                    <p>Total Incidents</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon accident"><i class="bi bi-exclamation-triangle"></i></div>
+                <div class="stat-info">
+                    <h3>{{ stats.accidents }}</h3>
+                    <p>Vehicle Accidents</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon fight"><i class="bi bi-exclamation-circle"></i></div>
+                <div class="stat-info">
+                    <h3>{{ stats.fights }}</h3>
+                    <p>Fights Detected</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon new"><i class="bi bi-bell"></i></div>
+                <div class="stat-info">
+                    <h3>{{ stats.new_alerts }}</h3>
+                    <p>New Alerts</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="incidents-section">
+            <div class="section-header">
+                <h2>Recent Incidents</h2>
+                <div style="display: flex; gap: 10px;">
+                    <form method="post" action="{% url 'fight_anomaly_detection' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="refresh-btn"
+                            style="background: linear-gradient(235deg, #ff6b6b 0%,#ee5a52 30%,#ee5a52 70%,#ff6b6b 100%);">
+                            <i class="bi bi-camera-video"></i> Run Fight Detection
+                        </button>
+                    </form>
+                    <form method="post" action="{% url 'anomaly_detection' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="refresh-btn"
+                            style="background: linear-gradient(235deg, #ff6b6b 0%,#ee5a52 30%,#ee5a52 70%,#ff6b6b 100%);">
+                            <i class="bi bi-camera-video"></i> Run Accident Detection
+                        </button>
+                    </form>
+                    <button class="refresh-btn" onclick="refreshIncidents()"><i class="bi bi-recycle"></i>
+                        Refresh</button>
+                </div>
+            </div>
+
+            <div class="incident-list" id="incidentList">
+                {% if incidents %}
+                {% for incident in incidents %}
+                <div class="incident-card {% if incident.status == 'new' %}new{% endif %}"
+                    onclick="window.location.href='{% url 'incident_detail' incident.id %}'">
+                    <div class="incident-info">
+                        <span class="incident-type {{ incident.incident_type }}">
+                            {% if incident.incident_type == 'accident' %}<i class="bi bi-exclamation-circle"></i>
+                            ACCIDENT{% else %}<i class="bi bi-exclamation-diamond"></i> FIGHT{% endif %}
+                        </span>
+                        <div class="incident-details">
+                            <strong>Location:</strong> {{ incident.location }}<br>
+                            <strong>Time:</strong> {{ incident.timestamp }} ({{ incident.detected_at|date:"M d, Y H:i" }})<br>
+                            {% if incident.incident_type == 'accident' %}
+                            <strong>Vehicles:</strong> {{ incident.vehicles.count }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="incident-status">
+                        <span class="status-badge {{ incident.status }}">{{ incident.get_status_display }}</span>
+                        <a href="{% url 'incident_detail' incident.id %}" class="view-btn"
+                            onclick="event.stopPropagation()">View Details</a>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon"><i class="bi bi-search"></i></div>
+                    <h3>No Incidents Detected</h3>
+                    <p>The system is actively monitoring. New incidents will appear here.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function refreshIncidents() {
+            fetch('{% url "get_incidents_api" %}')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Refreshed incidents:', data.incidents.length);
+                    location.reload();
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(refreshIncidents, 30000);
+
+        // Show loading animation on first load
+        window.addEventListener('load', function () {
+            const cards = document.querySelectorAll('.incident-card.new');
+            cards.forEach(card => {
+                card.classList.add('loading');
+                setTimeout(() => card.classList.remove('loading'), 2000);
+            });
+        });
+    </script>
+</body>
+
+</html>

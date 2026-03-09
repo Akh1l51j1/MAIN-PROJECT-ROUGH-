@@ -1,0 +1,351 @@
+<!-- SurveillanceApp\templates\surveillance\vehicle-tracking.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Tracking - Surveillance System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg,#2291c1 0%,#71baeb 20%,#71baeb 70%,#2291c1 90%,#71baeb 100%);
+            color: black;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .navbar-menu a,.navbar-menu .logout-form button {
+            color: black;
+            font-weight:600;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 7px;
+            margin-left: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .navbar-menu .logout-form {
+            display: inline;
+        }
+
+        .navbar-menu a {
+            color:black;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 7px;
+            margin-left: 10px;
+            font-weight:500;
+        }
+
+        .navbar-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 30px;
+        }
+
+        .search-section {
+            background: white;
+            border-radius: 7px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .search-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .search-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+
+        .search-header h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .search-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .search-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .plate-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 7px;
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-family: monospace;
+            transition: all 0.3s;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+
+        .plate-input:focus {
+            outline: none;
+            border-color: #2291c1;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg,#2291c1 0%,#71baeb 20%,#71baeb 70%,#2291c1 90%,#71baeb 100%);
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2291c1;
+            padding: 15px 20px;
+            border-radius: 7px;
+            margin-top: 20px;
+            color: #2291c1;
+            font-size: 14px;
+        }
+
+        .recent-searches {
+            background: white;
+            border-radius: 7px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .recent-searches h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .search-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .search-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 7px;
+            transition: all 0.3s;
+        }
+
+        .search-item:hover {
+            border-color: #2291c1;
+            box-shadow: 0 3px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .search-plate {
+            font-size: 18px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #333;
+            letter-spacing: 2px;
+        }
+
+        .search-time {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">Surveillance System</div>
+        <div class="navbar-menu">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'tracking' %}">Vehicle Tracking</a>
+
+            <form method="post" action="{% url 'logout' %}" class="logout-form">
+                {% csrf_token %}
+                <button type="submit" style="font-weight:600;">Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="search-section">
+            <div class="search-header">
+                <div class="search-icon"><i class="bi bi-search"></i></div>
+                <h1>Vehicle Tracking System</h1>
+                <p>Enter a license plate to track vehicle movement across all cameras</p>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" class="search-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="license_plate">License Plate Number</label>
+                    <input 
+                        type="text" 
+                        id="license_plate" 
+                        name="license_plate" 
+                        class="plate-input" 
+                        placeholder="ABC123"
+                        pattern="[A-Za-z0-9]+"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <button type="submit" class="search-btn">
+                    <span><i class="bi bi-search"></i></span>
+                    <span>Track Vehicle</span>
+                </button>
+
+                <div class="info-box">
+                    <i class="bi bi-exclamation-octagon"></i> The system will scan all tracking cameras to locate the vehicle and generate a complete route map with timestamps and images.
+                </div>
+            </form>
+        </div>
+
+        <div class="recent-searches">
+            <h2><i class="bi bi-card-list"></i> Recent Searches</h2>
+            {% if recent_searches %}
+                <div class="search-list">
+                    {% for search in recent_searches %}
+                        <div class="search-item">
+                            <div>
+                                <div class="search-plate">{{ search.license_plate }}</div>
+                                <div class="search-time">{{ search.searched_at|date:"M d, Y H:i" }}</div>
+                            </div>
+                            <a href="{% url 'tracking_results' search.id %}" style="color:#2291c1; text-decoration: none; font-weight: 600;">
+                                View Results →
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon"><i class="bi bi-mailbox"></i></div>
+                    <p>No recent searches</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Auto-uppercase input
+        document.getElementById('license_plate').addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        });
+
+        // Show loading on submit
+        document.querySelector('.search-form').addEventListener('submit', function(e) {
+            const btn = document.querySelector('.search-btn');
+            btn.innerHTML = '<span class="spinner"><i class="bi bi-hourglass-split"></i></span> <span>Tracking...</span>';
+            btn.disabled = true;
+        });
+    </script>
+</body>
+</html>
