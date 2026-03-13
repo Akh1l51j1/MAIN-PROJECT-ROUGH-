@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaggle Code — Line-by-Line Explanation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; line-height: 1.7; }
+        .container { max-width: 920px; margin: 0 auto; padding: 30px; }
+
+        .hero { text-align: center; padding: 50px 20px; margin-bottom: 32px; border-radius: 14px;
+            background: linear-gradient(135deg, #1e293b, #0f172a, #1e3a5f); border: 1px solid #334155; }
+        .hero h1 { font-size: 32px; background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+        .hero p { color: #94a3b8; font-size: 15px; }
+
+        .cell { background: #1e293b; border-radius: 12px; padding: 28px; margin-bottom: 20px; border: 1px solid #334155; }
+        .cell-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .cell-num { background: linear-gradient(135deg, #38bdf8, #818cf8); color: #0f172a; font-weight: 700;
+            padding: 4px 14px; border-radius: 20px; font-size: 13px; }
+        .cell-title { font-size: 20px; font-weight: 700; color: #f1f5f9; }
+
+        h3 { font-size: 16px; font-weight: 600; color: #93c5fd; margin: 20px 0 8px 0; }
+        p, li { color: #cbd5e1; margin-bottom: 8px; font-size: 14px; }
+        ul { margin-left: 20px; }
+
+        code { background: #334155; color: #fbbf24; padding: 2px 6px; border-radius: 4px;
+            font-family: 'Fira Code', monospace; font-size: 12px; }
+        pre { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 14px;
+            overflow-x: auto; margin: 10px 0; font-size: 12px; line-height: 1.5; }
+        pre code { background: none; color: #e2e8f0; padding: 0; }
+
+        .comment { color: #6b7280; }
+        .keyword { color: #c084fc; }
+        .string { color: #34d399; }
+        .func { color: #38bdf8; }
+        .num { color: #fb923c; }
+
+        table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+        th { background: #334155; color: #f1f5f9; padding: 10px 14px; text-align: left; font-weight: 600; }
+        td { padding: 8px 14px; border-bottom: 1px solid #334155; color: #cbd5e1; }
+
+        .callout { border-radius: 8px; padding: 14px 18px; margin: 14px 0; font-size: 13px; }
+        .callout.info { background: #0c2d48; border-left: 4px solid #38bdf8; }
+        .callout.warn { background: #422006; border-left: 4px solid #f59e0b; }
+        .callout p { margin: 0; }
+
+        .flow { display: flex; flex-direction: column; gap: 6px; align-items: center; margin: 14px 0; }
+        .flow-step { background: linear-gradient(135deg, #1e3a5f, #1e293b); border: 1px solid #38bdf8;
+            border-radius: 8px; padding: 10px 20px; text-align: center; min-width: 280px; font-size: 13px; font-weight: 500; }
+        .flow-arrow { color: #38bdf8; font-size: 18px; }
+
+        .fn-box { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 16px; margin: 10px 0; }
+        .fn-name { color: #38bdf8; font-weight: 700; font-family: 'Fira Code', monospace; font-size: 14px; margin-bottom: 6px; }
+        .fn-desc { color: #94a3b8; font-size: 13px; }
+
+        @media (max-width: 700px) { .container { padding: 16px; } .hero { padding: 30px 16px; } }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="hero">
+        <h1>⚗️ Kaggle Notebook Code — Explained</h1>
+        <p>Complete line-by-line breakdown of all 5 cells in the Kaggle notebook</p>
+    </div>
+
+    <!-- CELL 1 -->
+    <div class="cell">
+        <div class="cell-header">
+            <span class="cell-num">CELL 1</span>
+            <span class="cell-title">Install Dependencies</span>
+        </div>
+        <p>This cell installs all required Python packages for the AI pipeline.</p>
+        <pre><code><span class="comment"># Uninstall any existing versions to avoid conflicts</span>
+!pip uninstall -y numpy opencv-python ultralytics easyocr torch ...
+
+<span class="comment"># Install exact compatible versions</span>
+!pip install numpy==1.26.4 torch==2.2.2 torchvision==0.17.2 ...
+!pip install ultralytics==8.2.103 easyocr==1.7.1 flask==3.0.3 pyngrok==7.1.6 ...</code></pre>
+
+        <h3>Why specific versions?</h3>
+        <p>Kaggle's pre-installed packages can conflict with our code. We pin exact versions to ensure NumPy, PyTorch, and torchvision are binary-compatible. After running, <strong>restart the kernel</strong> so changes take effect.</p>
+
+        <table>
+            <tr><th>Package</th><th>Version</th><th>Why</th></tr>
+            <tr><td><code>torch</code></td><td>2.2.2</td><td>Deep learning — runs the YOLO models on GPU</td></tr>
+            <tr><td><code>ultralytics</code></td><td>8.2.103</td><td>YOLOv8 framework for object detection</td></tr>
+            <tr><td><code>easyocr</code></td><td>1.7.1</td><td>Reads license plate text from images</td></tr>
+            <tr><td><code>opencv-python-headless</code></td><td>4.10</td><td>Video/image processing (headless = no GUI)</td></tr>
+            <tr><td><code>flask</code></td><td>3.0.3</td><td>Lightweight web server for API endpoints</td></tr>
+            <tr><td><code>pyngrok</code></td><td>7.1.6</td><td>Creates public URL tunnel to Flask server</td></tr>
+            <tr><td><code>lapx</code></td><td>0.5.5</td><td>Linear Assignment Problem solver (for object tracking)</td></tr>
+        </table>
+    </div>
+
+    <!-- CELL 2 -->
+    <div class="cell">
+        <div class="cell-header">
+            <span class="cell-num">CELL 2</span>
+            <span class="cell-title">Verify NumPy + PyTorch</span>
+        </div>
+        <p>Quick sanity check that the packages work together.</p>
+        <pre><code><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">import</span> torch
+
+<span class="comment"># Create a NumPy array</span>
+x = np.zeros((<span class="num">2</span>, <span class="num">2</span>), dtype=np.float32)
+
+<span class="comment"># Convert to PyTorch tensor — this fails if versions are incompatible</span>
+t = torch.from_numpy(x)  <span class="comment"># ← "bridge" between NumPy and PyTorch</span></code></pre>
+
+        <div class="callout info">
+            <p>💡 The <code>torch.from_numpy()</code> call tests the "bridge" between NumPy and PyTorch. If versions don't match, you get a <code>ValueError: numpy.dtype size changed</code> error. If this cell passes, everything is compatible.</p>
+        </div>
+    </div>
+
+    <!-- CELL 3 -->
+    <div class="cell">
+        <div class="cell-header">
+            <span class="cell-num">CELL 3</span>
+            <span class="cell-title">Setup ngrok + Camera Feeds</span>
+        </div>
+
+        <h3>Part 1: Kill old ngrok tunnels</h3>
+        <pre><code><span class="keyword">from</span> pyngrok <span class="keyword">import</span> ngrok
+ngrok.kill()  <span class="comment"># Close any leftover tunnels from previous runs</span></code></pre>
+
+        <h3>Part 2: Define camera feeds</h3>
+        <pre><code>CAMERA_FEEDS = {
+    <span class="string">'cam1'</span>: {
+        <span class="string">'path'</span>: <span class="string">'/kaggle/input/.../track2.mp4'</span>,
+        <span class="string">'location'</span>: <span class="string">'Main Street Intersection'</span>
+    },
+    <span class="string">'cam2'</span>: { ... },
+    <span class="string">'cam3'</span>: { ... },
+}</code></pre>
+        <p>This dictionary maps <strong>camera IDs</strong> (cam1, cam2, cam3) to their <strong>video file paths</strong> and human-readable <strong>locations</strong>. These are the cameras that get searched when tracking a vehicle.</p>
+
+        <h3>Part 3: Register as environment variables</h3>
+        <pre><code><span class="keyword">for</span> cam_id, info <span class="keyword">in</span> CAMERA_FEEDS.items():
+    os.environ[f<span class="string">"{cam_id.upper()}_PATH"</span>] = info[<span class="string">'path'</span>]
+    os.environ[f<span class="string">"{cam_id.upper()}_LOCATION"</span>] = info[<span class="string">'location'</span>]
+os.environ[<span class="string">"CAMERA_COUNT"</span>] = str(len(CAMERA_FEEDS))</code></pre>
+        <p>Stores camera info in environment variables so other parts of the code can access them globally.</p>
+
+        <h3>Part 4: Start ngrok tunnel</h3>
+        <pre><code>ngrok.set_auth_token(<span class="string">"your_token_here"</span>)  <span class="comment"># Authenticate with ngrok</span>
+tunnel = ngrok.connect(<span class="num">5001</span>)  <span class="comment"># Create public URL → localhost:5001</span>
+print(f<span class="string">"YOUR NGROK URL IS: {tunnel.public_url}"</span>)</code></pre>
+
+        <div class="callout warn">
+            <p>⚠️ <strong>Important:</strong> Copy the printed ngrok URL and put it in Django's <code>settings.py</code> as <code>KAGGLE_API_URL</code>. This is how Django knows where to send requests.</p>
+        </div>
+    </div>
+
+    <!-- CELL 4 -->
+    <div class="cell">
+        <div class="cell-header">
+            <span class="cell-num">CELL 4</span>
+            <span class="cell-title">Load Models + Helper Functions</span>
+        </div>
+        <p>This is the biggest cell — it loads both AI models, initializes OCR, and defines all the helper functions.</p>
+
+        <h3>Configuration Constants</h3>
+        <table>
+            <tr><th>Constant</th><th>Value</th><th>Purpose</th></tr>
+            <tr><td><code>DJANGO_BASE_URL</code></td><td>Your ngrok URL</td><td>Where to send results back to Django</td></tr>
+            <tr><td><code>CUSTOM_MODEL_PATH</code></td><td><code>best.pt</code></td><td>Custom YOLO model (detects accidents & fights)</td></tr>
+            <tr><td><code>TRACKING_MODEL_PATH</code></td><td><code>yolov8m.pt</code></td><td>General YOLO model (detects cars for tracking)</td></tr>
+            <tr><td><code>CONFIDENCE_THRESHOLD</code></td><td>0.60</td><td>Min 60% confidence to count a detection</td></tr>
+            <tr><td><code>PLATE_MATCH_CONFIDENCE</code></td><td>0.80</td><td>80% string similarity for fuzzy plate matching</td></tr>
+            <tr><td><code>PRE_IMPACT_SECONDS</code></td><td>4</td><td>Go back 4 seconds before crash for plate extraction</td></tr>
+            <tr><td><code>BLUR_THRESHOLD</code></td><td>80.0</td><td>Skip blurry crops below this threshold</td></tr>
+            <tr><td><code>IMPACT_ZONE_RADIUS</code></td><td>120</td><td>Only track cars within 120px of crash point</td></tr>
+            <tr><td><code>DETECTION_WINDOW_SIZE</code></td><td>30</td><td>Rolling window of 30 frames</td></tr>
+            <tr><td><code>ACTIVATION_THRESHOLD</code></td><td>15</td><td>Need 15+ positive frames to confirm incident</td></tr>
+        </table>
+
+        <h3>Model Loading</h3>
+        <pre><code>device = <span class="string">'cuda'</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">'cpu'</span>
+
+<span class="comment"># Model 1: Detects accidents and fights</span>
+custom_model = YOLO(CUSTOM_MODEL_PATH).to(device)
+
+<span class="comment"># Model 2: Detects cars (for plate reading & tracking)</span>
+tracking_model = YOLO(TRACKING_MODEL_PATH).to(device)
+
+<span class="comment"># OCR engine for reading plate text</span>
+reader = easyocr.Reader([<span class="string">'en'</span>], gpu=(device == <span class="string">'cuda'</span>))</code></pre>
+
+        <h3>Helper Functions Explained</h3>
+
+        <div class="fn-box">
+            <div class="fn-name">image_to_base64(img)</div>
+            <div class="fn-desc">Converts an OpenCV image (numpy array) to a Base64 string. Used to send images over HTTP as JSON text instead of binary files.</div>
+        </div>
+
+        <div class="fn-box">
+            <div class="fn-name">forensic_upscale(img)</div>
+            <div class="fn-desc">Makes tiny license plates readable:<br>
+            1. <strong>Resize 3×</strong> using Lanczos interpolation (highest quality upscale)<br>
+            2. <strong>Convert to grayscale</strong> — OCR works better without color<br>
+            3. <strong>Apply CLAHE</strong> — enhances contrast to make faded text pop</div>
+        </div>
+
+        <div class="fn-box">
+            <div class="fn-name">is_blurry(gray, threshold=80)</div>
+            <div class="fn-desc">Checks if an image is too blurry for OCR using the <strong>Laplacian variance</strong> method. Sharp images have high variance (lots of edges). Blurry images have low variance. If variance < 80, skip it.</div>
+        </div>
+
+        <div class="fn-box">
+            <div class="fn-name">clean_text(text)</div>
+            <div class="fn-desc">Strips all non-alphanumeric characters and converts to uppercase. Turns <code>"JV-316 S"</code> → <code>"JV316S"</code>.</div>
+        </div>
+
+        <div class="fn-box">
+            <div class="fn-name">similar(a, b)</div>
+            <div class="fn-desc">Fuzzy string matching using <code>SequenceMatcher</code>. Returns 0.0–1.0 similarity ratio. Example: <code>similar("JV316S", "JV3165")</code> → 0.83 (83% match). Used because OCR often confuses S↔5, O↔0, etc.</div>
+        </div>
+
+        <div class="fn-box">
+            <div class="fn-name">get_video_fps(path)</div>
+            <div class="fn-desc">Gets the frames-per-second of a video. Used to calculate timestamps and how many frames = 4 seconds.</div>
+        </div>
+
+        <div class="fn-box">
+            <div class="fn-name">center(box) / distance(p1, p2) / iou(box1, box2)</div>
+            <div class="fn-desc">Geometry helpers. <code>center</code> finds the midpoint of a bounding box. <code>distance</code> measures pixel distance between two points. <code>iou</code> (Intersection over Union) measures how much two boxes overlap — used in tracking.</div>
+        </div>
+
+        <div class="fn-box">
+            <div class="fn-name">extract_impact_centers(frame)</div>
+            <div class="fn-desc">Finds the center coordinates of all cars in the crash frame. These points define the "impact zone" — only cars near these points are checked for plates.</div>
+        </div>
+
+        <h3>scan_camera_feed() — The Tracking Worker</h3>
+        <p>This is the core tracking function. It runs in a <strong>separate thread</strong> (one per camera) and scans an entire video looking for a specific license plate.</p>
+
+        <div class="flow">
+            <div class="flow-step">Open video → Read frames one by one</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">Run YOLOv8 tracking → Find all cars with IDs</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">Crop bottom 50% of each car (bumper/plate area)</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">Forensic upscale → Run OCR → Clean text</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">Compare with target plate (fuzzy match ≥ 80%)</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">Match found? → Save snapshot + timestamp → Stop</div>
+        </div>
+
+        <div class="callout info">
+            <p>💡 Each camera thread creates its <strong>own YOLO model and OCR reader</strong> instance to avoid thread-safety issues. The <code>thread_lock</code> is used when loading the model.</p>
+        </div>
+    </div>
+
+    <!-- CELL 5 -->
+    <div class="cell">
+        <div class="cell-header">
+            <span class="cell-num">CELL 5</span>
+            <span class="cell-title">Flask Server — API Endpoints</span>
+        </div>
+        <p>This cell creates the Flask web server with all API endpoints. Django sends requests here.</p>
+
+        <h3>All API Endpoints</h3>
+        <table>
+            <tr><th>Endpoint</th><th>Method</th><th>What it does</th></tr>
+            <tr><td><code>/detect_incident_async</code></td><td>POST</td><td>🔥 <strong>Main endpoint</strong> — starts the full 3-phase detection pipeline in a background thread</td></tr>
+            <tr><td><code>/search</code></td><td>POST</td><td>🔍 Starts cross-camera plate search in a background thread</td></tr>
+            <tr><td><code>/detect_incident</code></td><td>POST</td><td>Synchronous incident detection (returns result directly)</td></tr>
+            <tr><td><code>/extract_plates</code></td><td>POST</td><td>Synchronous plate extraction from a video segment</td></tr>
+            <tr><td><code>/track_vehicle</code></td><td>POST</td><td>Synchronous vehicle tracking across cameras</td></tr>
+            <tr><td><code>/submit_incident</code></td><td>POST</td><td>Submit an incident report to Django</td></tr>
+            <tr><td><code>/setup_camera_feeds</code></td><td>POST</td><td>Dynamically update camera feed configuration</td></tr>
+            <tr><td><code>/status</code></td><td>GET</td><td>Health check — returns server status</td></tr>
+        </table>
+
+        <h3><code>/detect_incident_async</code> — The Main Pipeline</h3>
+        <p>When Django clicks "Run Accident Detection", this is what happens:</p>
+        <pre><code><span class="comment"># Django sends:</span>
+{
+    <span class="string">"incident_log_id"</span>: <span class="num">13</span>,
+    <span class="string">"video_path"</span>: <span class="string">"/kaggle/.../accident.mp4"</span>,
+    <span class="string">"callback_url"</span>: <span class="string">"https://django-ngrok.dev/api/incident/create/"</span>
+}</code></pre>
+
+        <p>The endpoint spawns a <strong>background thread</strong> running <code>detect_and_callback()</code>:</p>
+
+        <div class="flow">
+            <div class="flow-step"><strong>PHASE 1:</strong> Scan video frame-by-frame with custom YOLO<br>Count accident/fight detections in sliding window (15/30 threshold)</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step"><strong>PHASE 2:</strong> Go back 4 seconds before crash frame<br>Find cars near impact zone → Crop bumper → OCR plates</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step"><strong>PHASE 3:</strong> For each detected plate → Spawn threads<br>Search all camera feeds simultaneously for matches</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step"><strong>CALLBACK:</strong> POST all results to Django's <code>/api/incident/create/</code><br>Django saves to database → Dashboard shows results</div>
+        </div>
+
+        <h3><code>/search</code> — Vehicle Tracking</h3>
+        <p>When user types a plate on the tracking page:</p>
+        <pre><code><span class="comment"># Django sends:</span>
+{
+    <span class="string">"search_id"</span>: <span class="num">5</span>,
+    <span class="string">"license_plate"</span>: <span class="string">"JV316S"</span>,
+    <span class="string">"callback_url"</span>: <span class="string">"https://django-ngrok.dev/api/search/result/"</span>
+}</code></pre>
+        <p>Spawns <code>search_and_callback()</code> in a background thread, which:</p>
+        <ul>
+            <li>Creates one thread per camera (cam1, cam2, cam3)</li>
+            <li>Each thread scans its video for plates matching "JV316S"</li>
+            <li>Uses fuzzy matching (80% threshold) to handle OCR errors</li>
+            <li>POSTs all detections back to Django's <code>/api/search/result/</code></li>
+        </ul>
+
+        <h3><code>detect_and_callback()</code> — Deep Dive</h3>
+
+        <h3>Phase 1: Incident Detection</h3>
+        <pre><code><span class="comment"># Sliding window approach to reduce false positives</span>
+recent_accidents = deque(maxlen=<span class="num">30</span>)  <span class="comment"># Last 30 frames</span>
+recent_fights = deque(maxlen=<span class="num">30</span>)
+
+<span class="keyword">while</span> cap.isOpened():
+    ret, frame = cap.read()  <span class="comment"># Read one frame</span>
+
+    <span class="comment"># Run custom YOLO model</span>
+    results = custom_model.predict(frame, conf=<span class="num">0.60</span>)
+
+    <span class="comment"># Check what was detected in this frame</span>
+    is_acc = <span class="string">'accident'</span> <span class="keyword">in</span> frame_classes
+    recent_accidents.append(<span class="num">1</span> <span class="keyword">if</span> is_acc <span class="keyword">else</span> <span class="num">0</span>)
+
+    <span class="comment"># If 15+ of last 30 frames had accidents → CONFIRMED</span>
+    <span class="keyword">if</span> sum(recent_accidents) >= <span class="num">15</span>:
+        incident_type = <span class="string">'accident'</span>
+        <span class="keyword">break</span>  <span class="comment"># Stop scanning</span></code></pre>
+
+        <div class="callout info">
+            <p>💡 <strong>Why a sliding window?</strong> A single frame might be a false positive (motion blur, weird angle). By requiring 15 out of 30 consecutive frames, we only trigger on sustained, real incidents.</p>
+        </div>
+
+        <h3>Phase 2: Plate Extraction</h3>
+        <pre><code><span class="comment"># Calculate which frames to scan (4 seconds before crash)</span>
+pre_impact_frames = int(fps * <span class="num">4</span>)
+start_frame = incident_frame - pre_impact_frames
+
+<span class="comment"># For each car near the impact zone...</span>
+bumper_crop = frame[y1 + h*<span class="num">0.50</span> : y2, x1 : x2]  <span class="comment"># Bottom 50% = plate area</span>
+processed = forensic_upscale(bumper_crop)          <span class="comment"># 3× zoom + contrast</span>
+<span class="keyword">if</span> is_blurry(processed): <span class="keyword">continue</span>                 <span class="comment"># Skip if too blurry</span>
+
+<span class="comment"># OCR — only allow A-Z and 0-9</span>
+ocr_hits = reader.readtext(processed, allowlist=<span class="string">'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'</span>)
+
+<span class="comment"># Collect all readings, then vote for the most common one</span>
+plate_ballot.append(detected_clean)</code></pre>
+
+        <h3>Phase 2 — Plate Voting Algorithm</h3>
+        <p>Since OCR gives slightly different readings each frame, we use a <strong>voting system</strong>:</p>
+        <ul>
+            <li><strong>Ideal case:</strong> Find plates with exactly 3 letters + 3 digits → Pick the most frequent one</li>
+            <li><strong>Fallback:</strong> Group plates by first 3 characters → Score by letter count + occurrence frequency → Pick the highest-scored</li>
+        </ul>
+
+        <h3>Phase 3: Cross-Camera Tracking</h3>
+        <pre><code><span class="comment"># For each detected plate, search all cameras in parallel</span>
+<span class="keyword">for</span> plate <span class="keyword">in</span> detected_plates:
+    threads = []
+    <span class="keyword">for</span> cam_id, cam_info <span class="keyword">in</span> CAMERA_FEEDS.items():
+        thread = Thread(target=scan_camera_feed, args=(cam_id, cam_info, plate))
+        threads.append(thread)
+        thread.start()
+
+    <span class="comment"># Wait for all camera threads to finish</span>
+    <span class="keyword">for</span> thread <span class="keyword">in</span> threads:
+        thread.join()
+
+    <span class="comment"># Collect results from the thread-safe queue</span>
+    <span class="keyword">while</span> <span class="keyword">not</span> results_queue.empty():
+        result_data = results_queue.get()
+        detections.append(result_data)</code></pre>
+
+        <h3>Final Callback to Django</h3>
+        <pre><code><span class="comment"># Package everything and send to Django</span>
+payload = {
+    <span class="string">"incident_log_id"</span>: incident_log_id,
+    <span class="string">"incident_type"</span>: <span class="string">"accident"</span>,
+    <span class="string">"snapshot"</span>: image_to_base64(incident_snapshot),
+    <span class="string">"vehicles"</span>: [{
+        <span class="string">"plate"</span>: <span class="string">"JV316S"</span>,
+        <span class="string">"detections"</span>: [{
+            <span class="string">"camera"</span>: <span class="string">"cam3"</span>,
+            <span class="string">"location"</span>: <span class="string">"Downtown Plaza"</span>,
+            <span class="string">"timestamp"</span>: <span class="string">"2026-03-08 17:33:59"</span>,
+            <span class="string">"snapshot"</span>: <span class="string">"base64..."</span>
+        }]
+    }]
+}
+requests.post(callback_url, json=payload)  <span class="comment"># → Django saves it all</span></code></pre>
+
+        <div class="callout info">
+            <p>💡 <strong>Error handling:</strong> If anything fails, a fallback callback with <code>"status": "no_incident"</code> is sent to Django. This ensures the dashboard loading page always unblocks — it never spins forever.</p>
+        </div>
+
+        <h3>Starting the Server</h3>
+        <pre><code>app.run(host=<span class="string">'0.0.0.0'</span>, port=<span class="num">5001</span>)
+<span class="comment"># 0.0.0.0 = listen on all network interfaces (needed for ngrok)</span>
+<span class="comment"># port 5001 = must match the ngrok tunnel from Cell 3</span></code></pre>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="cell">
+        <div class="cell-header">
+            <span class="cell-num">SUMMARY</span>
+            <span class="cell-title">Complete Request Flow</span>
+        </div>
+        <div class="flow">
+            <div class="flow-step">👤 User clicks "Run Accident Detection" on Dashboard</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">🐍 Django creates IncidentLog → Sends POST to Kaggle <code>/detect_incident_async</code></div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">⚗️ Kaggle spawns background thread → Returns HTTP 200 immediately</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">🔍 Phase 1: YOLO scans video → Detects accident at frame 245</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">📝 Phase 2: OCR reads plate "JV316S" from bumper crops</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">📷 Phase 3: Searches cam1, cam2, cam3 → Found in cam3 (Downtown Plaza)</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">📮 POSTs results to Django <code>/api/incident/create/</code></div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">🐍 Django saves Incident + Vehicle + Detections → Marks as processed</div>
+            <div class="flow-arrow">▼</div>
+            <div class="flow-step">👤 Dashboard poll detects is_processed=true → Shows results ✅</div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 30px; color: #64748b; font-size: 13px;">
+        Kaggle Code Explanation — Road Surveillance System
+    </div>
+</div>
+</body>
+</html>

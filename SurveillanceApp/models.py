@@ -3,7 +3,7 @@ from django.db import models
 
 class Incident(models.Model):
     INCIDENT_TYPES = [('accident', 'Vehicle Accident'), ('fight', 'Fight Detected')]
-    STATUS_CHOICES = [('new', 'New'), ('processing', 'Processing'), ('completed', 'Completed')]
+    STATUS_CHOICES = [('new', 'New'), ('reviewed', 'Reviewed'), ('processing', 'Processing'), ('completed', 'Completed')]
 
     incident_type = models.CharField(max_length=20, choices=INCIDENT_TYPES)
     location = models.CharField(max_length=255, default="Main Feed")
@@ -27,6 +27,7 @@ class SearchLog(models.Model):
 class IncidentLog(models.Model):
     """Tracks async anomaly detection requests sent to Kaggle"""
     video_path = models.CharField(max_length=500, default="")
+    incident = models.ForeignKey(Incident, on_delete=models.SET_NULL, null=True, blank=True)
     is_processed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

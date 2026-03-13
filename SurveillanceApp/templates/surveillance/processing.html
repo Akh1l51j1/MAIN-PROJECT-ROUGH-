@@ -1,215 +1,125 @@
-<!-- SurveillanceApp\templates\surveillance\processing.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Processing Search - {{ search.license_plate }}</title>
+    <title>Tracking {{ search.license_plate }}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg-color: #f5f3ff;
+            --text-primary: #1e1b4b;
+            --text-secondary: #6b7280;
+            --border-color: #ede9fe;
+            --card-bg: #ffffff;
+            --accent-purple: #8B5CF6;
+            --status-completed-bg: #f5f3ff;
+            --status-completed-text: #7c3aed;
+            --card-shadow: rgba(139, 92, 246, 0.08);
+            --info-text: #c4b5fd;
+            --camera-bg: #faf8ff;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --card-bg: #1e293b;
+            --accent-purple: #a78bfa;
+            --status-completed-bg: rgba(139, 92, 246, 0.2);
+            --status-completed-text: #c4b5fd;
+            --card-shadow: rgba(0, 0, 0, 0.3);
+            --info-text: #94a3b8;
+            --camera-bg: #0f172a;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-color); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
 
         .processing-container {
-            background: white;
-            border-radius: 20px;
-            padding: 60px 80px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 50px 60px;
             text-align: center;
-            max-width: 600px;
+            max-width: 520px;
+            width: 90%;
+            box-shadow: 0 8px 40px var(--card-shadow);
         }
 
         .spinner {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 30px;
-            border: 6px solid #e0e0e0;
-            border-top: 6px solid #2291c1;
+            width: 64px; height: 64px;
+            margin: 0 auto 24px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-purple);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .plate-display {
-            font-size: 42px;
-            font-weight: 900;
-            font-family: monospace;
-            letter-spacing: 5px;
-            background: linear-gradient(135deg, #2291c1 0%, #71baeb 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .status-text {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
+        .plate-display { font-size: 38px; font-weight: 700; font-family: 'Fira Code', monospace; letter-spacing: 5px; color: var(--accent-purple); margin-bottom: 16px; }
+        h1 { font-size: 22px; color: var(--text-primary); margin-bottom: 10px; font-weight: 700; }
+        .status-text { color: var(--text-secondary); font-size: 14px; margin-bottom: 28px; line-height: 1.7; }
 
         .cameras-list {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 30px;
+            background: var(--camera-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 18px;
         }
+        .camera-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+        .camera-item:last-child { border-bottom: none; }
+        .camera-name { font-weight: 600; color: var(--text-primary); font-size: 13px; }
+        .camera-item i { color: var(--info-text); margin-right: 8px; }
 
-        .camera-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
+        .scanning-badge { background: var(--status-completed-bg); color: var(--status-completed-text); padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        .camera-item:last-child {
-            border-bottom: none;
-        }
-
-        .camera-name {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .scanning-badge {
-            background: #2291c1;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 30px;
-        }
-
+        .progress-bar { width: 100%; height: 4px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 24px; }
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #2291c1, #71baeb);
-            width: 0%;
-            animation: progress 3s ease-in-out infinite;
+            background: linear-gradient(90deg, #8B5CF6, #c084fc, #8B5CF6);
+            background-size: 200% 100%;
+            animation: shimmer 2s ease-in-out infinite;
         }
+        @keyframes shimmer { 0% { background-position: 200% 0; width: 0%; } 50% { width: 70%; } 100% { background-position: -200% 0; width: 100%; } }
 
-        @keyframes progress {
-            0% { width: 0%; }
-            50% { width: 70%; }
-            100% { width: 100%; }
-        }
-
-        .info-text {
-            margin-top: 20px;
-            color: #999;
-            font-size: 14px;
-        }
-
-        .pulse {
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
+        .info-text { margin-top: 18px; color: var(--info-text); font-size: 12px; }
     </style>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
 </head>
 <body>
     <div class="processing-container">
         <div class="spinner"></div>
-        
         <div class="plate-display">{{ search.license_plate }}</div>
-        
         <h1><i class="bi bi-search"></i> Analyzing Footage</h1>
-        
-        <p class="status-text">
-            Scanning multiple camera feeds to track this vehicle.<br>
-            This may take 30-60 seconds...
-        </p>
-
+        <p class="status-text">Scanning multiple camera feeds to track this vehicle.<br>This may take 30–60 seconds...</p>
         <div class="cameras-list">
-            <div class="camera-item">
-                <div>
-                    <i class="bi bi-camera-video"></i>
-                    <span class="camera-name">Main Street Intersection</span>
-                </div>
-                <span class="scanning-badge pulse">Scanning</span>
-            </div>
-            <div class="camera-item">
-                <div>
-                    <i class="bi bi-camera-video"></i>
-                    <span class="camera-name">Highway Exit 42</span>
-                </div>
-                <span class="scanning-badge pulse">Scanning</span>
-            </div>
-            <div class="camera-item">
-                <div>
-                    <i class="bi bi-camera-video"></i>
-                    <span class="camera-name">Downtown Plaza</span>
-                </div>
-                <span class="scanning-badge pulse">Scanning</span>
-            </div>
+            <div class="camera-item"><div><i class="bi bi-camera-video"></i><span class="camera-name">Main Street Intersection</span></div><span class="scanning-badge">Scanning</span></div>
+            <div class="camera-item"><div><i class="bi bi-camera-video"></i><span class="camera-name">Highway Exit 42</span></div><span class="scanning-badge">Scanning</span></div>
+            <div class="camera-item"><div><i class="bi bi-camera-video"></i><span class="camera-name">Downtown Plaza</span></div><span class="scanning-badge">Scanning</span></div>
         </div>
-
-        <div class="progress-bar">
-            <div class="progress-fill"></div>
-        </div>
-
-        <p class="info-text">
-            <i class="bi bi-info-circle"></i> 
-            Using AI-powered license plate recognition across all cameras
-        </p>
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <p class="info-text"><i class="bi bi-gpu-card"></i> Using AI-powered license plate recognition across all cameras</p>
     </div>
-
     <script>
-        // AJAX polling to check if processing is complete
         const searchId = {{ search.id }};
-        
         function checkStatus() {
             fetch(`/api/check-status/${searchId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.is_processed) {
-                        // Redirect to results page
-                        window.location.href = `/tracking/${searchId}/`;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error checking status:', error);
-                });
+                .then(r => r.json())
+                .then(data => { if (data.is_processed) window.location.href = `/tracking/${searchId}/`; })
+                .catch(e => console.error('Error:', e));
         }
-
-        // Poll every 3 seconds
         setInterval(checkStatus, 3000);
-        
-        // Also check immediately
         checkStatus();
     </script>
 </body>

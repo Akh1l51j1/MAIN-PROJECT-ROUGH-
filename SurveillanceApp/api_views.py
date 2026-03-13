@@ -82,7 +82,7 @@ def create_incident_api(request):
 
         # Signal the frontend that processing is complete.
         if incident_log_id:
-            IncidentLog.objects.filter(id=incident_log_id).update(is_processed=True)
+            IncidentLog.objects.filter(id=incident_log_id).update(is_processed=True, incident=incident)
 
         return JsonResponse({'success': True, 'incident_id': incident.id})
     
@@ -225,7 +225,8 @@ def check_incident_status_api(request, log_id):
         log = IncidentLog.objects.get(id=log_id)
         return JsonResponse({
             'is_processed': log.is_processed,
-            'log_id': log_id
+            'log_id': log_id,
+            'incident_id': log.incident_id if log.incident else None
         })
     except IncidentLog.DoesNotExist:
         return JsonResponse({

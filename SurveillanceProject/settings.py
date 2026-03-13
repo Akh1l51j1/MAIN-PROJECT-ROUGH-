@@ -16,6 +16,28 @@ from pathlib import Path
 KAGGLE_API_URL = "https://bausond-martially-cherly.ngrok-free.dev"
 DJANGO_CALLBACK_URL = " https://balladic-crysta-vocatively.ngrok-free.dev"
 
+# Video catalog — add new videos here, they'll appear in the dashboard dropdown
+KAGGLE_VIDEO_BASE_PATH = "/kaggle/input/datasets/akhilsiji21/roadsurveillance-testdata"
+AVAILABLE_VIDEOS = [
+    {"name": "Accident Video", "file": "accident.mp4", "type": "accident"},
+    {"name": "Fight Video", "file": "fight1.mp4", "type": "fight"},
+    {"name": "Normal Traffic", "file": "normal_traffic.mp4", "type": "accident"},
+    {"name": "Normal Street", "file": "normal-street.mp4", "type": "fight"},
+    #{"name": "Camera 1 Feed", "file": "cam1.mp4", "type": "accident"},
+    #{"name": "Camera 2 Feed", "file": "cam2.mp4", "type": "accident"},
+    #{"name": "Camera 3 Feed", "file": "cam3.mp4", "type": "accident"},
+    #{"name": "Track 1", "file": "track1.mp4", "type": "accident"},
+    #{"name": "Track 2", "file": "track2.mp4", "type": "accident"},
+    #{"name": "Track 3", "file": "track3.mp4", "type": "accident"},
+    #{"name": "Track 4", "file": "track4.mp4", "type": "accident"},
+    {"name": "Fight Video 2", "file": "fight2.mp4", "type": "fight"},
+    {"name": "Fight Video 3", "file": "fight3.mp4", "type": "fight"},
+    #{"name": "Mahindra (Plate Track)", "file": "mahindra.mp4", "type": "accident"},
+    #{"name": "Virtus (Plate Track)", "file": "virtus.mp4", "type": "accident"},
+    {"name": "Accident Animation 1", "file": "accidentanimation01.mp4", "type": "accident"},
+    {"name": "Accident Animation 2", "file": "accidentanimation02.mp4", "type": "accident"},
+]
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -117,7 +139,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 

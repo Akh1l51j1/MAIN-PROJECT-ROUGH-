@@ -1,189 +1,278 @@
-<!-- SurveillanceApp\templates\surveillance\login.html -->
 {%load static%}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Intelligent Surveillance System</title>
+    <title>Login - Surveillance System</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #f5f3ff;
+            --text-primary: #1e1b4b;
+            --text-secondary: #6b7280;
+            --border-color: #ede9fe;
+            --card-bg: #ffffff;
+            --accent-purple: #8B5CF6;
+            --accent-hover: #7c3aed;
+            --card-shadow: rgba(139, 92, 246, 0.1);
+            --header-gradient-start: #f5f3ff;
+            --header-gradient-end: #ede9fe;
+            --input-bg: #faf8ff;
+            --input-focus-shadow: rgba(139, 92, 246, 0.1);
+            --info-text: #c4b5fd;
+            --error-bg: #fef2f2;
+            --error-text: #dc2626;
+            --feature-text: #8b8b9e;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --card-bg: #1e293b;
+            --accent-purple: #a78bfa;
+            --accent-hover: #c4b5fd;
+            --card-shadow: rgba(0, 0, 0, 0.3);
+            --header-gradient-start: #0f172a;
+            --header-gradient-end: #1e293b;
+            --input-bg: #0f172a;
+            --input-focus-shadow: rgba(167, 139, 250, 0.2);
+            --info-text: #64748b;
+            --error-bg: rgba(220, 38, 38, 0.1);
+            --error-text: #f87171;
+            --feature-text: #64748b;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg,#2291c1 0%,#71baeb 20%,#71baeb 70%,#2291c1 90%,#71baeb 100%);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-color);
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Subtle animated bg */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(167, 139, 250, 0.04) 0%, transparent 50%);
+            animation: bgMove 20s ease-in-out infinite alternate;
+            z-index: 0;
+        }
+
+        @keyframes bgMove {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(-2%, -2%);
+            }
         }
 
         .login-container {
-            background: white;
-            border-radius: 7px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
             overflow: hidden;
-            width: 400px;
-            max-width: 90%;
+            width: 420px;
+            max-width: 92%;
+            box-shadow: 0 20px 60px var(--card-shadow);
         }
 
         .login-header {
-            background: linear-gradient(135deg,#2291c1 0%,#71baeb 20%,#71baeb 70%,#2291c1 90%,#71baeb 100%);
             padding: 40px 30px;
             text-align: center;
-            color: black;
+            position: relative;
+            overflow: hidden;
         }
 
-        .login-header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .login-header p {
-            font-size: 14px;
-            opacity: 0.9;
+        .login-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--header-gradient-start), var(--header-gradient-end));
+            transition: background 0.3s;
         }
 
         .icon {
             width: 80px;
             height: 80px;
-            margin: 0 auto 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 7px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
+            margin: 0 auto 18px;
+            position: relative;
+        }
+
+        .icon img {
+            width: 100%;
+            height: auto;
+            border-radius: 16px;
+        }
+
+        .login-header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent-hover);
+            margin-bottom: 6px;
+            position: relative;
+        }
+
+        .login-header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            position: relative;
         }
 
         .login-form {
-            padding: 40px 30px;
+            padding: 32px 30px;
         }
 
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 22px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #333;
+            color: var(--text-secondary);
             font-weight: 500;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 7px;
+            padding: 12px 16px;
+            background: var(--input-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            color: var(--text-primary);
             font-size: 14px;
-            transition: all 0.3s;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s, color 0.3s;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #2291c1;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 4px var(--input-focus-shadow);
+        }
+
+        .form-group input::placeholder {
+            color: var(--info-text);
+            opacity: 0.7;
         }
 
         .login-btn {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg,#2291c1 0%,#71baeb 20%,#71baeb 70%,#2291c1 90%,#71baeb 100%);
+            background: var(--accent-purple);
             color: white;
             border: none;
-            border-radius: 7px;
-            font-size: 16px;
-            font-weight: 600;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: inherit;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
         }
 
         .login-btn:hover {
+            background: var(--accent-hover);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
         }
 
         .alert {
-            padding: 12px 15px;
-            border-radius: 7px;
-            margin-bottom: 20px;
-            font-size: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            font-size: 13px;
         }
 
         .alert-error {
-            background: #fee;
-            color: #c33;
-            border-left: 4px solid #c33;
+            background: var(--error-bg);
+            color: var(--error-text);
+            border-left: 3px solid var(--error-text);
         }
 
         .features {
             display: flex;
             justify-content: space-around;
-            padding: 20px 30px;
-            background: #f8f9fa;
-            border-top: 1px solid #e0e0e0;
+            padding: 18px 30px;
+            border-top: 1px solid var(--border-color);
         }
 
         .feature {
             text-align: center;
-            font-size: 12px;
-            color: #666;
+            color: var(--feature-text);
+            font-size: 11px;
         }
 
         .feature-icon {
-            font-size: 24px;
-            margin-bottom: 5px;
+            font-size: 20px;
+            margin-bottom: 4px;
+            color: var(--info-text);
         }
     </style>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
 </head>
+
 <body>
     <div class="login-container">
         <div class="login-header">
-            <div class="icon"><img src="{% static 'img/logo.png' %}" height="auto" width="100px"></div>
-            <h1>Surveillance System</h1>
-            <p style="font-weight:500;">Intelligent Incident Detection & Tracking</p>
+            <div class="icon"><img src="{% static 'img/logo.png' %}" alt="Logo"></div>
+            <h1>SENTINEL</h1>
+            <p>Intelligent Incident Detection & Tracking</p>
         </div>
-
         <div class="login-form">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-error">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-
+            {% if messages %}{% for message in messages %}<div class="alert alert-error">{{ message }}</div>{% endfor %}{% endif %}
             <form method="POST">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required autofocus>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-
+                <div class="form-group"><label for="username">Username</label><input type="text" id="username"
+                        name="username" placeholder="Enter username" required autofocus></div>
+                <div class="form-group"><label for="password">Password</label><input type="password" id="password"
+                        name="password" placeholder="Enter password" required></div>
                 <button type="submit" class="login-btn">Login</button>
             </form>
         </div>
-
         <div class="features">
             <div class="feature">
                 <div class="feature-icon"><i class="bi bi-camera-reels"></i></div>
-                <div>Real-time Monitoring</div>
+                <div>Real-time</div>
             </div>
             <div class="feature">
                 <div class="feature-icon"><i class="bi bi-car-front"></i></div>
-                <div>Vehicle Tracking</div>
+                <div>Tracking</div>
             </div>
             <div class="feature">
                 <div class="feature-icon"><i class="bi bi-lightning-charge"></i></div>
@@ -192,4 +281,5 @@
         </div>
     </div>
 </body>
+
 </html>

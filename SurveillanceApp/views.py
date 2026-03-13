@@ -11,6 +11,11 @@ import base64
 from io import BytesIO
 from django.core.files.base import ContentFile
 from PIL import Image
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Count
+from django.db.models.functions import TruncDate
+import json
 
 
 def login_view(request):
@@ -47,14 +52,44 @@ def dashboard(request):
       - stats: aggregate counts (total, by type, and unreviewed 'new' alerts).
       - incidents: the 10 most recently detected incidents for the activity feed.
     """
+    stats = {
+        'total': Incident.objects.count(),
+        'accidents': Incident.objects.filter(incident_type='accident').count(),
+        'fights': Incident.objects.filter(incident_type='fight').count(),
+        'new_alerts': Incident.objects.filter(status='new').count()
+    }
+
+    incidents = Incident.objects.all().order_by('-detected_at')[:20]
+
+    # Calculate trends for the last 7 days
+    sevendays_ago = timezone.now() - timedelta(days=6) # 6 days ago + today = 7 days
+    
+    # Query database for daily counts
+    daily_counts = (Incident.objects
+                    .filter(detected_at__gte=sevendays_ago)
+                    .annotate(day=TruncDate('detected_at'))
+                    .values('day')
+                    .annotate(count=Count('id'))
+                    .order_by('day'))
+                    
+    # Initialize dictionary to ensure all 7 days have a value (even 0)
+    trend_dict = {(timezone.now() - timedelta(days=i)).date().strftime('%b %d'): 0 for i in range(6, -1, -1)}
+    
+    for entry in daily_counts:
+        day_str = entry['day'].strftime('%b %d')
+        if day_str in trend_dict:
+            trend_dict[day_str] = entry['count']
+            
+    chart_labels = json.dumps(list(trend_dict.keys()))
+    chart_data = json.dumps(list(trend_dict.values()))
+
     return render(request, 'surveillance/dashboard.html', {
-        'stats': {
-            'total': Incident.objects.count(),
-            'accidents': Incident.objects.filter(incident_type='accident').count(),
-            'fights': Incident.objects.filter(incident_type='fight').count(),
-            'new_alerts': Incident.objects.filter(status='new').count(),
-        },
-        'incidents': Incident.objects.order_by('-detected_at')[:10]
+        'incidents': incidents,
+        'stats': stats,
+        'fight_videos': [v for v in settings.AVAILABLE_VIDEOS if v['type'] == 'fight'],
+        'accident_videos': [v for v in settings.AVAILABLE_VIDEOS if v['type'] == 'accident'],
+        'chart_labels': chart_labels,
+        'chart_data': chart_data,
     })
 
 
@@ -105,7 +140,12 @@ def anomaly_detection(request):
     the thread is killed automatically when the server process exits.
     """
     if request.method == 'POST':
-        video_path = "/kaggle/input/datasets/akhilsiji21/roadsurveillance-testdata/accident.mp4"
+        selected_file = request.POST.get('video_file', 'accident.mp4')
+        # Validate: only allow files from the configured list
+        allowed_files = [v['file'] for v in settings.AVAILABLE_VIDEOS]
+        if selected_file not in allowed_files:
+            selected_file = 'accident.mp4'
+        video_path = f"{settings.KAGGLE_VIDEO_BASE_PATH}/{selected_file}"
         
         # Create a log entry to track this detection job's processing state.
         log = IncidentLog.objects.create(
@@ -134,7 +174,11 @@ def fight_anomaly_detection(request):
     independently (e.g. different confidence thresholds, video sources).
     """
     if request.method == 'POST':
-        video_path = "/kaggle/input/datasets/akhilsiji21/roadsurveillance-testdata/fight1.mp4"
+        selected_file = request.POST.get('video_file', 'fight1.mp4')
+        allowed_files = [v['file'] for v in settings.AVAILABLE_VIDEOS]
+        if selected_file not in allowed_files:
+            selected_file = 'fight1.mp4'
+        video_path = f"{settings.KAGGLE_VIDEO_BASE_PATH}/{selected_file}"
         
         log = IncidentLog.objects.create(
             video_path=video_path,
@@ -184,6 +228,11 @@ def incident_detail(request, incident_id):
     a snapshot image reference — displayed as a timeline in the template.
     """
     incident = get_object_or_404(Incident, id=incident_id)
+    
+    if incident.status == 'new':
+        incident.status = 'reviewed'
+        incident.save(update_fields=['status'])
+        
     vehicles = incident.vehicles.all()
 
     for v in vehicles:

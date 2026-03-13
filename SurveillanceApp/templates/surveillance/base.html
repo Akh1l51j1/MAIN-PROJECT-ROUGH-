@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Surveillance System{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Theme Variables */
+            --bg-color: #f5f3ff;
+            --text-primary: #1e1b4b;
+            --text-secondary: #6b7280;
+            --border-color: #ede9fe;
+            --card-bg: #ffffff;
+            --navbar-bg: #ffffff;
+            --accent-purple: #8B5CF6;
+            --accent-hover: #7c3aed;
+            --nav-hover-bg: #f5f3ff;
+            --nav-active-bg: #ede9fe;
+            --card-shadow: rgba(139, 92, 246, 0.06);
+            --card-shadow-hover: rgba(139, 92, 246, 0.1);
+
+            /* Status/Alert Colors - Keeping them standard */
+            --status-new-bg: #f0fdf4;
+            --status-new-text: #16a34a;
+            --status-processing-bg: #fffbeb;
+            --status-processing-text: #d97706;
+            --status-completed-bg: #f5f3ff;
+            --status-completed-text: #7c3aed;
+            --status-reviewed-bg: #f1f5f9;
+            --status-reviewed-text: #64748b;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme Variables */
+            --bg-color: #0f172a;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --card-bg: #1e293b;
+            --navbar-bg: #0f172a;
+            --accent-purple: #a78bfa;
+            --accent-hover: #c4b5fd;
+            --nav-hover-bg: #334155;
+            --nav-active-bg: #475569;
+            --card-shadow: rgba(0, 0, 0, 0.3);
+            --card-shadow-hover: rgba(0, 0, 0, 0.5);
+
+            /* Darker Status/Alert Colors */
+            --status-new-bg: rgba(22, 163, 74, 0.2);
+            --status-new-text: #4ade80;
+            --status-processing-bg: rgba(217, 119, 6, 0.2);
+            --status-processing-text: #fbbf24;
+            --status-completed-bg: rgba(139, 92, 246, 0.2);
+            --status-completed-text: #c4b5fd;
+            --status-reviewed-bg: rgba(100, 116, 139, 0.2);
+            --status-reviewed-text: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            background: var(--navbar-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 14px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 8px var(--card-shadow);
+        }
+
+        .navbar-brand {
+            font-size: 22px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+        }
+
+        .navbar-brand i {
+            color: var(--accent-purple);
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .navbar-menu a,
+        .navbar-menu .logout-form button,
+        .theme-btn {
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .navbar-menu a:hover,
+        .navbar-menu .logout-form button:hover,
+        .theme-btn:hover {
+            background: var(--nav-hover-bg);
+            color: var(--accent-hover);
+        }
+
+        .navbar-menu a.active {
+            background: var(--nav-active-bg);
+            color: var(--accent-hover);
+        }
+
+        .navbar-menu .logout-form {
+            display: inline;
+        }
+
+        /* ── CONTAINER ── */
+        .container {
+            max-width: 1400px;
+            margin: 28px auto;
+            padding: 0 28px;
+        }
+
+        /* ── SMOOTH CARD ── */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 24px var(--card-shadow),
+                0 1px 4px rgba(0, 0, 0, 0.02);
+            transition: box-shadow 0.3s, transform 0.3s, background-color 0.3s, border-color 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 32px var(--card-shadow-hover),
+                0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-purple);
+        }
+
+        /* ── DJANGO BLOCK ── */
+        {% block extra_css %}{% endblock %}
+    </style>
+    <!-- Dark Mode Initializer to prevent flash -->
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        } else {
+            // Check OS preference
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <i class="bi bi-shield-lock"></i> SENTINEL
+        </div>
+        <div class="navbar-menu">
+            <a href="{% url 'dashboard' %}" class="{% block nav_dashboard %}{% endblock %}">
+                <i class="bi bi-grid-1x2"></i> Dashboard
+            </a>
+            <a href="{% url 'tracking' %}" class="{% block nav_tracking %}{% endblock %}">
+                <i class="bi bi-search"></i> Vehicle Tracking
+            </a>
+            <button id="themeToggle" class="theme-btn" title="Toggle Dark Mode">
+                <i class="bi bi-moon" id="themeIcon"></i>
+            </button>
+            <form method="post" action="{% url 'logout' %}" class="logout-form">
+                {% csrf_token %}
+                <button type="submit"><i class="bi bi-box-arrow-right"></i> Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    {% block extra_js %}{% endblock %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const html = document.documentElement;
+
+            function updateIcon(theme) {
+                if (theme === 'dark') {
+                    themeIcon.classList.remove('bi-moon');
+                    themeIcon.classList.add('bi-sun');
+                } else {
+                    themeIcon.classList.remove('bi-sun');
+                    themeIcon.classList.add('bi-moon');
+                }
+            }
+
+            // Sync icon on load
+            const currentTheme = html.getAttribute('data-theme') || 'light';
+            updateIcon(currentTheme);
+
+            themeToggle.addEventListener('click', () => {
+                let currentTheme = html.getAttribute('data-theme');
+                let targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+                html.setAttribute('data-theme', targetTheme);
+                localStorage.setItem('theme', targetTheme);
+                updateIcon(targetTheme);
+
+                // Dispatch event so charts/other components can react if needed
+                window.dispatchEvent(new Event('themeChanged'));
+            });
+        });
+    </script>
+</body>
+
+</html>

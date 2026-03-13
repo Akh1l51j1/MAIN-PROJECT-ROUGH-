@@ -1,4 +1,3 @@
-<!-- SurveillanceApp\templates\surveillance\processing_incident.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,197 +5,215 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analyzing Video Feed</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg-color: #f5f3ff;
+            --text-primary: #1e1b4b;
+            --text-secondary: #6b7280;
+            --border-color: #ede9fe;
+            --card-bg: #ffffff;
+            --accent-purple: #8B5CF6;
+            --accent-hover: #7c3aed;
+            --status-completed-bg: #f5f3ff;
+            --status-completed-text: #7c3aed;
+            --status-pending-bg: #f1f5f9;
+            --status-pending-text: #94a3b8;
+            --card-shadow: rgba(139, 92, 246, 0.08);
+            --info-text: #c4b5fd;
+            --camera-bg: #faf8ff;
+            --modal-overlay: rgba(30, 27, 75, 0.6);
+            --modal-shadow: rgba(139, 92, 246, 0.15);
+            --btn-clear-bg: #f1f5f9;
+            --btn-clear-text: #475569;
+            --btn-clear-hover: #e2e8f0;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --card-bg: #1e293b;
+            --accent-purple: #a78bfa;
+            --accent-hover: #c4b5fd;
+            --status-completed-bg: rgba(139, 92, 246, 0.2);
+            --status-completed-text: #c4b5fd;
+            --status-pending-bg: rgba(100, 116, 139, 0.2);
+            --status-pending-text: #94a3b8;
+            --card-shadow: rgba(0, 0, 0, 0.3);
+            --info-text: #94a3b8;
+            --camera-bg: #0f172a;
+            --modal-overlay: rgba(0, 0, 0, 0.8);
+            --modal-shadow: rgba(0, 0, 0, 0.5);
+            --btn-clear-bg: #334155;
+            --btn-clear-text: #f8fafc;
+            --btn-clear-hover: #475569;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-color); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
 
         .processing-container {
-            background: white;
-            border-radius: 20px;
-            padding: 60px 80px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 50px 60px;
             text-align: center;
-            max-width: 600px;
+            max-width: 520px;
+            width: 90%;
+            box-shadow: 0 8px 40px var(--card-shadow);
         }
 
         .spinner {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 30px;
-            border: 6px solid #e0e0e0;
-            border-top: 6px solid #e74c3c;
+            width: 64px; height: 64px;
+            margin: 0 auto 28px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-purple);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        h1 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .status-text {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
+        h1 { font-size: 22px; color: var(--text-primary); margin-bottom: 10px; font-weight: 700; }
+        .status-text { color: var(--text-secondary); font-size: 14px; margin-bottom: 28px; line-height: 1.7; }
 
         .steps-list {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 30px;
+            background: var(--camera-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 18px;
             text-align: left;
         }
+        .step-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+        .step-item:last-child { border-bottom: none; }
+        .step-icon { margin-right: 12px; font-size: 16px; color: var(--text-secondary); }
+        .step-name { font-weight: 600; color: var(--text-primary); font-size: 13px; flex: 1; }
 
-        .step-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
+        .badge-active { background: var(--status-completed-bg); color: var(--status-completed-text); padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; animation: pulse 2s ease-in-out infinite; }
+        .badge-pending { background: var(--status-pending-bg); color: var(--status-pending-text); padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        .step-item:last-child {
-            border-bottom: none;
-        }
-
-        .step-icon {
-            margin-right: 12px;
-            font-size: 18px;
-        }
-
-        .step-name {
-            font-weight: 600;
-            color: #333;
-            flex: 1;
-        }
-
-        .scanning-badge {
-            background: #e74c3c;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 30px;
-        }
-
+        .progress-bar { width: 100%; height: 4px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 24px; }
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #e74c3c, #f39c12);
-            width: 0%;
-            animation: progress 4s ease-in-out infinite;
+            background: linear-gradient(90deg, #8B5CF6, #c084fc, #8B5CF6);
+            background-size: 200% 100%;
+            animation: shimmer 2s ease-in-out infinite;
         }
+        @keyframes shimmer { 0% { background-position: 200% 0; width: 0%; } 50% { width: 70%; } 100% { background-position: -200% 0; width: 100%; } }
 
-        @keyframes progress {
-            0% { width: 0%; }
-            50% { width: 70%; }
-            100% { width: 100%; }
-        }
+        .info-text { margin-top: 18px; color: var(--info-text); font-size: 12px; }
 
-        .info-text {
-            margin-top: 20px;
-            color: #999;
-            font-size: 14px;
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--modal-overlay);
+            backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+            transition: background-color 0.3s;
         }
-
-        .pulse {
-            animation: pulse 2s ease-in-out infinite;
+        .modal-content {
+            background: var(--card-bg); border-radius: 24px; padding: 40px;
+            text-align: center; max-width: 400px; width: 90%;
+            box-shadow: 0 20px 40px var(--modal-shadow);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            transition: background-color 0.3s, box-shadow 0.3s;
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
+        .modal-icon { font-size: 48px; margin-bottom: 16px; }
+        .modal-icon.detected { color: #dc2626; }
+        .modal-icon.clear { color: #16a34a; }
+        .modal-content h2 { color: var(--text-primary); margin-bottom: 10px; font-size: 22px; font-weight: 800; }
+        .modal-content p { color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; }
+        .modal-btn {
+            display: inline-block; padding: 12px 28px; border-radius: 12px;
+            font-size: 14px; font-weight: 600; text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+        }
+        .btn-detected { background: var(--accent-purple); color: white; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3); }
+        .btn-detected:hover { transform: translateY(-2px); background: var(--accent-hover); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4); }
+        .btn-clear { background: var(--btn-clear-bg); color: var(--btn-clear-text); }
+        .btn-clear:hover { background: var(--btn-clear-hover); transform: translateY(-2px); }
     </style>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
 </head>
 <body>
     <div class="processing-container">
         <div class="spinner"></div>
-        
-        <h1><i class="bi bi-search"></i> Analyzing Video Feed</h1>
-        
-        <p class="status-text">
-            Running AI anomaly detection on the camera feed.<br>
-            This may take 2-5 minutes...
-        </p>
-
+        <h1><i class="bi bi-cpu"></i> Analyzing Video Feed</h1>
+        <p class="status-text">Running AI anomaly detection on the camera feed.<br>This may take 2–5 minutes...</p>
         <div class="steps-list">
-            <div class="step-item">
-                <span class="step-icon"><i class="bi bi-camera-video"></i></span>
-                <span class="step-name">Incident Detection (YOLOv8)</span>
-                <span class="scanning-badge pulse">Processing</span>
-            </div>
-            <div class="step-item">
-                <span class="step-icon"><i class="bi bi-123"></i></span>
-                <span class="step-name">License Plate Extraction</span>
-                <span class="scanning-badge pulse">Pending</span>
-            </div>
-            <div class="step-item">
-                <span class="step-icon"><i class="bi bi-broadcast"></i></span>
-                <span class="step-name">Multi-Camera Vehicle Tracking</span>
-                <span class="scanning-badge pulse">Pending</span>
-            </div>
+            <div class="step-item"><span class="step-icon"><i class="bi bi-camera-video"></i></span><span class="step-name">Incident Detection Model</span><span class="badge-active">Processing</span></div>
+            <div class="step-item"><span class="step-icon"><i class="bi bi-123"></i></span><span class="step-name">License Plate Extraction</span><span class="badge-pending">Pending</span></div>
+            <div class="step-item"><span class="step-icon"><i class="bi bi-broadcast"></i></span><span class="step-name">Multi-Camera Vehicle Tracking</span><span class="badge-pending">Pending</span></div>
         </div>
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <p class="info-text"><i class="bi bi-gpu-card"></i> Using custom AI model running on Kaggle GPU</p>
+    </div>
 
-        <div class="progress-bar">
-            <div class="progress-fill"></div>
+    <!-- Result Modal -->
+    <div id="resultModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div id="modalIcon" class="modal-icon"></div>
+            <h2 id="modalTitle">Analysis Complete</h2>
+            <p id="modalText"></p>
+            <a id="modalActionBtn" href="#" class="modal-btn">Continue</a>
         </div>
-
-        <p class="info-text">
-            <i class="bi bi-info-circle"></i> 
-            Using custom YOLOv8 model running on Kaggle GPU
-        </p>
     </div>
 
     <script>
-        // AJAX polling to check if processing is complete
         const logId = {{ log.id }};
-        
-        function checkStatus() {
-            fetch(`/api/check-incident-status/${logId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.is_processed) {
-                        // Redirect to dashboard
-                        window.location.href = '/';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error checking status:', error);
-                });
+        let pollInterval;
+
+        function showModal(isDetected, incidentId) {
+            const modal = document.getElementById('resultModal');
+            const icon = document.getElementById('modalIcon');
+            const title = document.getElementById('modalTitle');
+            const text = document.getElementById('modalText');
+            const btn = document.getElementById('modalActionBtn');
+
+            if (isDetected && incidentId) {
+                icon.className = 'modal-icon detected bi bi-exclamation-triangle-fill';
+                title.textContent = 'Incident Detected';
+                text.textContent = 'Our AI has identified a potential incident in the video feed. Please review the details immediately.';
+                btn.className = 'modal-btn btn-detected';
+                btn.textContent = 'View Details';
+                btn.href = '/incident/' + incidentId + '/';
+            } else {
+                icon.className = 'modal-icon clear bi bi-check-circle-fill';
+                title.textContent = 'No Incidents Detected';
+                text.textContent = 'The video feed has been analyzed successfully and no anomalies or incidents were found.';
+                btn.className = 'modal-btn btn-clear';
+                btn.textContent = 'Return to Dashboard';
+                btn.href = '/';
+            }
+            modal.style.display = 'flex';
         }
 
-        // Poll every 5 seconds
-        setInterval(checkStatus, 5000);
-        
-        // Also check immediately
+        function checkStatus() {
+            fetch(`/api/check-incident-status/${logId}/`)
+                .then(r => r.json())
+                .then(data => { 
+                    if (data.is_processed) {
+                        clearInterval(pollInterval);
+                        showModal(!!data.incident_id, data.incident_id);
+                    }
+                })
+                .catch(e => console.error('Error:', e));
+        }
+        pollInterval = setInterval(checkStatus, 5000);
         checkStatus();
     </script>
 </body>

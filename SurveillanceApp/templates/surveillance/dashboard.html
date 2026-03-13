@@ -1,447 +1,492 @@
-<!-- SurveillanceApp\templates\surveillance\dashboard.html -->
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'surveillance/base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Surveillance System</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+{% block title %}Dashboard - Surveillance System{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-        }
+{% block extra_css %}
+/* ── STAT CARDS ── */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin-bottom: 28px;
+}
 
-        .navbar {
-            background: linear-gradient(135deg, #2291c1 0%, #71baeb 20%, #71baeb 70%, #2291c1 100%);
-            color: Black;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+.stat-card {
+    padding: 26px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
 
-        .navbar-brand {
-            font-size: 24px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+.stat-card:hover {
+    transform: translateY(-4px);
+}
 
-        .navbar-menu {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
+.stat-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: white;
+    flex-shrink: 0;
+}
 
-        .navbar-menu a {
-            color: black;
-            font-weight: 600;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 7px;
-            transition: background 0.3s;
-        }
+.stat-icon.total { background: #8B5CF6; }
+.stat-icon.accident { background: #EF4444; }
+.stat-icon.fight { background: #F59E0B; }
+.stat-icon.new { background: #22C55E; }
 
-        .navbar-menu a:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
+.stat-info h3 {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
 
-        .navbar-menu a,
-        .navbar-menu .logout-form button {
-            color: black;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 7px;
-            margin-left: 10px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font: inherit;
-        }
+.stat-info p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+}
 
-        .navbar-menu .logout-form {
-            display: inline;
-        }
+/* ── INCIDENTS SECTION ── */
+.incidents-section {
+    padding: 28px;
+}
 
-        .container {
-            max-width: 1400px;
-            margin: 30px auto;
-            padding: 0 30px;
-        }
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 14px;
+}
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
+.section-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
 
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 7px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            transition: transform 0.3s;
-        }
+.controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
 
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
-        }
+/* ── BUTTONS ── */
+.btn {
+    padding: 9px 18px;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
 
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: white;
-        }
+.btn:hover {
+    transform: translateY(-2px);
+}
 
-        .stat-icon.total {
-            background: linear-gradient(135deg, #71baeb 0%, #2291c1 30%, #2291c1 70%, #71baeb 90%, #2291c1 100%);
-        }
+.btn-detect {
+    background: #8B5CF6;
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
+}
+.btn-detect:hover { box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4); }
 
-        .stat-icon.accident {
-            background: linear-gradient(135deg, #71baeb 0%, #2291c1 30%, #2291c1 70%, #71baeb 90%, #2291c1 100%);
-        }
+.btn-refresh {
+    background: var(--bg-color);
+    color: var(--accent-purple);
+    border: 1px solid var(--border-color);
+}
+.btn-refresh:hover {
+    background: var(--border-color);
+    box-shadow: 0 4px 12px var(--card-shadow);
+}
 
-        .stat-icon.fight {
-            background: linear-gradient(135deg, #71baeb 0%, #2291c1 30%, #2291c1 70%, #71baeb 90%, #2291c1 100%);
-        }
+/* video dropdown */
+.video-select {
+    padding: 9px 14px;
+    background: var(--card-bg);
+    color: var(--accent-hover);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    min-width: 170px;
+    appearance: auto;
+    transition: border-color 0.2s, background-color 0.3s, color 0.3s;
+}
 
-        .stat-icon.new {
-            background: linear-gradient(135deg, #71baeb 0%, #2291c1 30%, #2291c1 70%, #71baeb 90%, #2291c1 100%);
-        }
+.video-select:focus {
+    outline: none;
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
 
-        .stat-info h3 {
-            font-size: 32px;
-            color: #333;
-            margin-bottom: 5px;
-        }
+/* ── INCIDENT CARDS ── */
+.incident-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
 
-        .stat-info p {
-            color: #666;
-            font-size: 14px;
-        }
+.incident-card {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
 
-        .incidents-section {
-            background: white;
-            border-radius: 7px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            padding: 30px;
-        }
+.incident-card:hover {
+    border-color: var(--accent-hover);
+    background: var(--card-bg);
+    transform: translateX(3px);
+    box-shadow: 0 4px 16px var(--card-shadow);
+}
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
+.incident-card.new {
+    border-left: 4px solid var(--accent-purple);
+}
 
-        .section-header h2 {
-            font-size: 24px;
-            color: #333;
-        }
+/* Latest — subtle highlight */
+.incident-card.latest {
+    border: 1px solid var(--accent-hover);
+    border-left: 4px solid var(--accent-purple);
+    background: var(--bg-color);
+    box-shadow: 0 4px 20px var(--card-shadow-hover);
+    animation: glow 3s ease-in-out 2;
+    position: relative;
+}
 
-        .refresh-btn {
-            padding: 10px 20px;
-            background: linear-gradient(235deg, #71ebb8 0%, #2bb081 30%, #2bb081 70%, #71ebb8 100%);
-            color: white;
-            border: none;
-            border-radius: 7px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: transform 0.2s;
-        }
+.incident-card.latest::before {
+    content: '● NEW';
+    position: absolute;
+    top: -9px;
+    right: 16px;
+    background: var(--accent-purple);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 8px;
+    letter-spacing: 1px;
+}
 
-        .refresh-btn:hover {
-            transform: translateY(-2px);
-        }
+@keyframes glow {
+    0%, 100% { box-shadow: 0 4px 16px rgba(139, 92, 246, 0.06); }
+    50% { box-shadow: 0 4px 28px rgba(139, 92, 246, 0.15); }
+}
 
-        .incident-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+.incident-info { flex: 1; }
 
-        .incident-card {
-            border: 2px solid #e0e0e0;
-            border-radius: 7px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
+.incident-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
 
-        .incident-card:hover {
-            border-color: #3486ca;
-            box-shadow: 0 3px 12px rgba(102, 126, 234, 0.15);
-        }
+.incident-type.accident {
+    background: var(--error-bg);
+    color: var(--error-text);
+}
 
-        .incident-card.new {
-            border-left: 5px solid #43e97b;
-        }
+.incident-type.fight {
+    background: var(--warning-bg);
+    color: var(--warning-text);
+}
 
-        .incident-info {
-            flex: 1;
-        }
+.incident-details {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.8;
+}
 
-        .incident-type {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 13px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
+.incident-details strong { color: var(--text-primary); }
 
-        .incident-type.accident {
-            background: #fee;
-            color: #c33;
-        }
+.incident-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
 
-        .incident-type.fight {
-            background: #eef;
-            color: #33c;
-        }
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
 
-        .incident-details {
-            color: #666;
-            font-size: 14px;
-        }
+.status-badge.new { background: var(--status-new-bg); color: var(--status-new-text); }
+.status-badge.processing { background: var(--status-processing-bg); color: var(--status-processing-text); }
+.status-badge.completed { background: var(--status-completed-bg); color: var(--status-completed-text); }
+.status-badge.reviewed { background: var(--status-reviewed-bg); color: var(--status-reviewed-text); }
 
-        .incident-details strong {
-            color: #333;
-        }
+.view-btn {
+    padding: 8px 18px;
+    background: var(--accent-purple);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+    box-shadow: 0 2px 8px var(--card-shadow);
+}
 
-        .incident-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+.view-btn:hover {
+    transform: translateY(-2px);
+    background: var(--accent-hover);
+    box-shadow: 0 4px 16px var(--card-shadow-hover);
+}
 
-        .status-badge {
-            padding: 8px 16px;
-            border-radius: 13px;
-            font-size: 13px;
-            font-weight: 600;
-        }
+/* ── EMPTY STATE ── */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+}
 
-        .status-badge.new {
-            background: #43e97b;
-            color: white;
-        }
+.empty-state-icon {
+    font-size: 56px;
+    margin-bottom: 16px;
+    color: var(--accent-hover);
+}
 
-        .status-badge.processing {
-            background: #ffa726;
-            color: white;
-        }
+.empty-state h3 { color: var(--text-primary); margin-bottom: 8px; }
+.empty-state p { color: var(--text-secondary); font-size: 14px; }
 
-        .status-badge.completed {
-            background: #667eea;
-            color: white;
-        }
+@media (max-width: 768px) {
+    .section-header { flex-direction: column; align-items: flex-start; }
+    .controls { width: 100%; }
+    .incident-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .incident-status { align-self: flex-end; }
+}
+{% endblock %}
 
-        .status-badge.reviewed {
-            background: #90a4ae;
-            color: white;
-        }
-
-        .view-btn {
-            padding: 10px 20px;
-            background: linear-gradient(195deg, #eb718e 0%, #c84747 30%, #c84747 70%, #eb718e 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .view-btn:hover {
-            background: #2291c1;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
-
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        .loading {
-            animation: pulse 1.5s infinite;
-        }
-    </style>
-</head>
-
-<body>
-    <nav class="navbar">
-        <div class="navbar-brand">
-            Surveillance System
+{% block content %}
+<div class="stats-grid">
+    <div class="card stat-card">
+        <div class="stat-icon total"><i class="bi bi-bar-chart"></i></div>
+        <div class="stat-info">
+            <h3>{{ stats.total }}</h3>
+            <p>Total Incidents</p>
         </div>
-        <div class="navbar-menu">
-            <a href="{% url 'dashboard' %}">Dashboard</a>
-            <a href="{% url 'tracking' %}">Vehicle Tracking</a>
-            <form method="post" action="{% url 'logout' %}" class="logout-form">
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon accident"><i class="bi bi-exclamation-triangle"></i></div>
+        <div class="stat-info">
+            <h3>{{ stats.accidents }}</h3>
+            <p>Vehicle Accidents</p>
+        </div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon fight"><i class="bi bi-exclamation-circle"></i></div>
+        <div class="stat-info">
+            <h3>{{ stats.fights }}</h3>
+            <p>Fights Detected</p>
+        </div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon new"><i class="bi bi-bell"></i></div>
+        <div class="stat-info">
+            <h3>{{ stats.new_alerts }}</h3>
+            <p>New Alerts</p>
+        </div>
+    </div>
+</div>
+
+<div class="card chart-section" style="padding: 28px; margin-bottom: 28px;">
+    <h2 style="font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 24px;"><i class="bi bi-graph-up-arrow"></i> Incident Trends (Last 7 Days)</h2>
+    <div style="position: relative; height: 250px; width: 100%;">
+        <canvas id="incidentChart"></canvas>
+    </div>
+</div>
+
+<div class="card incidents-section">
+    <div class="section-header">
+        <h2><i class="bi bi-activity"></i> Recent Incidents</h2>
+        <div class="controls">
+            <form method="post" action="{% url 'fight_anomaly_detection' %}" style="display:inline-flex; gap:6px; align-items:center;">
                 {% csrf_token %}
-                <button type="submit">Logout</button>
+                <select name="video_file" class="video-select">
+                    {% for video in fight_videos %}
+                    <option value="{{ video.file }}">{{ video.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-detect">
+                    <i class="bi bi-camera-video"></i> Scan Fight
+                </button>
             </form>
-        </div>
-    </nav>
-
-    <div class="container">
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon total"><i class="bi bi-bar-chart"></i></div>
-                <div class="stat-info">
-                    <h3>{{ stats.total }}</h3>
-                    <p>Total Incidents</p>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon accident"><i class="bi bi-exclamation-triangle"></i></div>
-                <div class="stat-info">
-                    <h3>{{ stats.accidents }}</h3>
-                    <p>Vehicle Accidents</p>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon fight"><i class="bi bi-exclamation-circle"></i></div>
-                <div class="stat-info">
-                    <h3>{{ stats.fights }}</h3>
-                    <p>Fights Detected</p>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon new"><i class="bi bi-bell"></i></div>
-                <div class="stat-info">
-                    <h3>{{ stats.new_alerts }}</h3>
-                    <p>New Alerts</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="incidents-section">
-            <div class="section-header">
-                <h2>Recent Incidents</h2>
-                <div style="display: flex; gap: 10px;">
-                    <form method="post" action="{% url 'fight_anomaly_detection' %}" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="refresh-btn"
-                            style="background: linear-gradient(235deg, #ff6b6b 0%,#ee5a52 30%,#ee5a52 70%,#ff6b6b 100%);">
-                            <i class="bi bi-camera-video"></i> Run Fight Detection
-                        </button>
-                    </form>
-                    <form method="post" action="{% url 'anomaly_detection' %}" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="refresh-btn"
-                            style="background: linear-gradient(235deg, #ff6b6b 0%,#ee5a52 30%,#ee5a52 70%,#ff6b6b 100%);">
-                            <i class="bi bi-camera-video"></i> Run Accident Detection
-                        </button>
-                    </form>
-                    <button class="refresh-btn" onclick="refreshIncidents()"><i class="bi bi-recycle"></i>
-                        Refresh</button>
-                </div>
-            </div>
-
-            <div class="incident-list" id="incidentList">
-                {% if incidents %}
-                {% for incident in incidents %}
-                <div class="incident-card {% if incident.status == 'new' %}new{% endif %}"
-                    onclick="window.location.href='{% url 'incident_detail' incident.id %}'">
-                    <div class="incident-info">
-                        <span class="incident-type {{ incident.incident_type }}">
-                            {% if incident.incident_type == 'accident' %}<i class="bi bi-exclamation-circle"></i>
-                            ACCIDENT{% else %}<i class="bi bi-exclamation-diamond"></i> FIGHT{% endif %}
-                        </span>
-                        <div class="incident-details">
-                            <strong>Location:</strong> {{ incident.location }}<br>
-                            <strong>Time:</strong> {{ incident.timestamp }} ({{ incident.detected_at|date:"M d, Y H:i" }})<br>
-                            {% if incident.incident_type == 'accident' %}
-                            <strong>Vehicles:</strong> {{ incident.vehicles.count }}
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="incident-status">
-                        <span class="status-badge {{ incident.status }}">{{ incident.get_status_display }}</span>
-                        <a href="{% url 'incident_detail' incident.id %}" class="view-btn"
-                            onclick="event.stopPropagation()">View Details</a>
-                    </div>
-                </div>
-                {% endfor %}
-                {% else %}
-                <div class="empty-state">
-                    <div class="empty-state-icon"><i class="bi bi-search"></i></div>
-                    <h3>No Incidents Detected</h3>
-                    <p>The system is actively monitoring. New incidents will appear here.</p>
-                </div>
-                {% endif %}
-            </div>
+            <form method="post" action="{% url 'anomaly_detection' %}" style="display:inline-flex; gap:6px; align-items:center;">
+                {% csrf_token %}
+                <select name="video_file" class="video-select">
+                    {% for video in accident_videos %}
+                    <option value="{{ video.file }}">{{ video.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-detect">
+                    <i class="bi bi-camera-video"></i> Scan Accident
+                </button>
+            </form>
+            <button class="btn btn-refresh" onclick="refreshIncidents()">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
         </div>
     </div>
 
-    <script>
-        function refreshIncidents() {
-            fetch('{% url "get_incidents_api" %}')
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Refreshed incidents:', data.incidents.length);
-                    location.reload();
-                })
-                .catch(error => console.error('Error:', error));
+    <div class="incident-list" id="incidentList">
+        {% if incidents %}
+        {% for incident in incidents %}
+        <div class="incident-card {% if incident.status == 'new' %}new{% endif %} {% if forloop.first and incident.status == 'new' %}latest{% endif %}"
+            onclick="window.location.href='{% url 'incident_detail' incident.id %}'">
+            <div class="incident-info">
+                <span class="incident-type {{ incident.incident_type }}">
+                    {% if incident.incident_type == 'accident' %}<i class="bi bi-car-front"></i> ACCIDENT{% else %}<i class="bi bi-exclamation-diamond"></i> FIGHT{% endif %}
+                </span>
+                <div class="incident-details">
+                    <strong>Location:</strong> {{ incident.location }}<br>
+                    <strong>Time:</strong> {{ incident.timestamp }} ({{ incident.detected_at|date:"M d, Y H:i" }})<br>
+                    {% if incident.incident_type == 'accident' %}
+                    <strong>Vehicles:</strong> {{ incident.vehicles.count }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="incident-status">
+                <span class="status-badge {{ incident.status }}">{{ incident.get_status_display }}</span>
+                <a href="{% url 'incident_detail' incident.id %}" class="view-btn"
+                    onclick="event.stopPropagation()">View Details</a>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon"><i class="bi bi-shield-check"></i></div>
+            <h3>No Incidents Detected</h3>
+            <p>The system is actively monitoring. New incidents will appear here.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function refreshIncidents() {
+        fetch('{% url "get_incidents_api" %}')
+            .then(r => r.json())
+            .then(() => location.reload())
+            .catch(e => console.error('Error:', e));
+    }
+
+    setInterval(refreshIncidents, 30000);
+
+    // Render Incident Trends Chart
+    let chartInstance = null;
+    
+    function initChart() {
+        const ctx = document.getElementById('incidentChart').getContext('2d');
+        const labels = {{ chart_labels|safe }};
+        const data = {{ chart_data|safe }};
+        
+        // Dynamically assign correct colors based on theme
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const gridColor = isDark ? '#334155' : '#ede9fe';
+        const tooltipBg = isDark ? '#1e293b' : '#ffffff';
+        const fontColor = isDark ? '#f8fafc' : '#6b7280';
+        const accentPurple = '#8B5CF6';
+        
+        let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(139, 92, 246, 0.4)');
+        gradient.addColorStop(1, 'rgba(139, 92, 246, 0.0)');
+
+        if (chartInstance) {
+            chartInstance.destroy();
         }
 
-        // Auto-refresh every 30 seconds
-        setInterval(refreshIncidents, 30000);
-
-        // Show loading animation on first load
-        window.addEventListener('load', function () {
-            const cards = document.querySelectorAll('.incident-card.new');
-            cards.forEach(card => {
-                card.classList.add('loading');
-                setTimeout(() => card.classList.remove('loading'), 2000);
-            });
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Incidents Detected',
+                    data: data,
+                    borderColor: accentPurple,
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: accentPurple,
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: tooltipBg,
+                        titleColor: fontColor,
+                        bodyColor: fontColor,
+                        padding: 12,
+                        titleFont: { family: 'Inter', size: 13 },
+                        bodyFont: { family: 'Inter', size: 14, weight: 'bold' },
+                        displayColors: false,
+                        cornerRadius: 8,
+                        borderColor: gridColor,
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 12 }, color: fontColor }
+                    },
+                    y: {
+                        grid: { color: gridColor, drawBorder: false },
+                        ticks: { font: { family: 'Inter', size: 12 }, color: fontColor, stepSize: 1, precision: 0 },
+                        beginAtZero: true
+                    }
+                }
+            }
         });
-    </script>
-</body>
+    }
 
-</html>
+    document.addEventListener("DOMContentLoaded", initChart);
+    window.addEventListener("themeChanged", initChart);
+</script>
+{% endblock %}

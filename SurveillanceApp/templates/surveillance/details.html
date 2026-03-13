@@ -1,394 +1,155 @@
-<!-- SurveillanceApp\templates\surveillance\details.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Incident Details - Surveillance System</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+{% extends 'surveillance/base.html' %}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-        }
+{% block title %}Incident #{{ incident.id }} - Surveillance System{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
 
-        .navbar {
-            background: linear-gradient(135deg,#2291c1 0%,#71baeb 20%,#71baeb 70%,#2291c1 100%);
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+{% block extra_css %}
+.back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--accent-purple); text-decoration: none; margin-bottom: 20px; font-weight: 600; font-size: 14px; transition: color 0.2s; }
+.back-btn:hover { color: var(--accent-hover); }
 
-        .navbar-brand {
-            font-size: 24px;
-            font-weight: 700;
-        }
+.incident-header { padding: 28px; margin-bottom: 24px; }
 
-        .navbar-menu a {
-            color: white;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 7px;
-            margin-left: 10px;
-        }
+.incident-type-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 12px; font-size: 13px; font-weight: 700; margin-bottom: 14px; letter-spacing: 0.5px; }
+.incident-type-badge.accident { background: var(--error-bg); color: var(--error-text); }
+.incident-type-badge.fight { background: var(--warning-bg); color: var(--warning-text); }
 
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 30px;
-        }
+.incident-header h1 { font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 18px; }
 
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #2291c1;
-            text-decoration: none;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
+.incident-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 22px; }
+.meta-item { padding: 16px; background: var(--bg-color); border-radius: 14px; border: 1px solid var(--border-color); }
+.meta-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-weight: 600; }
+.meta-value { font-size: 16px; color: var(--text-primary); font-weight: 600; }
 
-        .back-btn:hover {
-            text-decoration: underline;
-        }
+.resolve-btn { padding: 10px 22px; background: #22c55e; color: white; border: none; border-radius: 14px; cursor: pointer; font-size: 14px; font-weight: 600; font-family: inherit; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 14px rgba(34,197,94,0.2); }
+.resolve-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(34,197,94,0.3); }
+.resolve-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        .incident-header {
-            background: white;
-            border-radius: 7px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            margin-bottom: 30px;
-        }
+.download-btn { padding: 10px 22px; background: #3b82f6; color: white; border: none; border-radius: 14px; cursor: pointer; font-size: 14px; font-weight: 600; font-family: inherit; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 14px rgba(59,130,246,0.2); margin-left: 10px; }
+.download-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,0.3); }
 
-        .incident-type-badge {
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 7px;
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
+.content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+.detail-card { padding: 24px; }
+.detail-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 18px; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
 
-        .incident-type-badge.accident {
-            background: linear-gradient(135deg, #bb73c3 0%, #cb4b5c 100%);
-            color: white;
-        }
+.snapshot-img { width: 100%; border-radius: 16px; border: 1px solid var(--border-color); }
 
-        .incident-type-badge.fight {
-            background: linear-gradient(135deg, #d1d141 0%, #a4c500 100%);
-            color: white;
-        }
+.vehicle-list { display: flex; flex-direction: column; gap: 12px; }
+.vehicle-card { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; transition: border-color 0.2s; }
+.vehicle-card:hover { border-color: var(--accent-hover); }
+.plate-number { font-size: 22px; font-weight: 800; font-family: 'Fira Code', monospace; color: var(--accent-purple); margin-bottom: 10px; }
+.vehicle-card div { color: var(--text-secondary); font-size: 13px; margin-bottom: 4px; }
+.vehicle-card div strong { color: var(--text-primary); }
 
-        .incident-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
+.route-map { padding: 28px; margin-bottom: 24px; }
+.route-map h3 { font-size: 17px; font-weight: 700; color: var(--text-primary); margin-bottom: 22px; display: flex; align-items: center; gap: 8px; }
 
-        .meta-item {
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 7px;
-        }
+.route-timeline { position: relative; padding-left: 40px; }
+.route-item { position: relative; margin-bottom: 28px; padding-bottom: 28px; border-left: 2px solid var(--border-color); }
+.route-item:last-child { border-left: none; }
 
-        .meta-label {
-            font-size: 12px;
-            color: #666;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
+.route-marker { position: absolute; left: -42px; width: 32px; height: 32px; background: var(--accent-purple); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 13px; box-shadow: 0 4px 12px var(--card-shadow); }
+.route-content { margin-left: 20px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 16px; padding: 18px; transition: border-color 0.2s; }
+.route-content:hover { border-color: var(--accent-hover); }
+.route-camera { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+.route-location, .route-time { color: var(--text-secondary); font-size: 13px; margin-bottom: 4px; }
+.route-content div strong { color: var(--text-primary); }
+.route-snapshot { width: 100%; max-width: 400px; border-radius: 14px; margin-top: 12px; border: 1px solid var(--border-color); }
 
-        .meta-value {
-            font-size: 18px;
-            color: #333;
-            font-weight: 600;
-        }
+@media (max-width: 768px) { .content-grid { grid-template-columns: 1fr; } }
+{% endblock %}
 
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
+{% block content %}
+<a href="{% url 'dashboard' %}" class="back-btn"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
 
-        .card {
-            background: white;
-            border-radius: 7px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-        }
-
-        .card h3 {
-            font-size: 20px;
-            margin-bottom: 20px;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .snapshot-img {
-            width: 100%;
-            border-radius: 7px;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .vehicle-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .vehicle-card {
-            border: 2px solid #e0e0e0;
-            border-radius: 7px;
-            padding: 15px;
-            transition: all 0.3s;
-        }
-
-        .vehicle-card:hover {
-            border-color: #2291c1;
-            box-shadow: 0 3px 12px rgba(102, 126, 234, 0.15);
-        }
-
-        .plate-number {
-            font-size: 24px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 10px;
-            font-family: monospace;
-            background: #2291c1;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .route-map {
-            background: white;
-            border-radius: 7px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            margin-bottom: 30px;
-        }
-
-        .route-timeline {
-            position: relative;
-            padding-left: 40px;
-        }
-
-        .route-item {
-            position: relative;
-            margin-bottom: 30px;
-            padding-bottom: 30px;
-            border-left: 3px solid #e0e0e0;
-        }
-
-        .route-item:last-child {
-            border-left: none;
-        }
-
-        .route-marker {
-            position: absolute;
-            left: -42px;
-            width: 30px;
-            height: 30px;
-            background: linear-gradient(135deg,#2291c1 0%,#71baeb 100%);
-            border-radius: 7px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        .route-content {
-            margin-left: 20px;
-        }
-
-        .route-camera {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .route-location {
-            color: #666;
-            margin-bottom: 5px;
-        }
-
-        .route-time {
-            color: #999;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        .route-snapshot {
-            width: 100%;
-            max-width: 400px;
-            border-radius: 7px;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
-            margin-top: 10px;
-        }
-
-        .resolve-btn {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #42b067 0%, #3dceb4 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: transform 0.2s;
-        }
-
-        .resolve-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .resolve-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        @media (max-width: 768px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar">
-        <div class="navbar-brand">Surveillance System</div>
-        <div class="navbar-menu">
-            <a href="{% url 'dashboard' %}">Dashboard</a>
-            <a href="{% url 'tracking' %}">Tracking</a>
-        </div>
-    </nav>
-
-    <div class="container">
-        <a href="{% url 'dashboard' %}" class="back-btn">← Back to Dashboard</a>
-
-        <div class="incident-header">
-            <span class="incident-type-badge {{ incident.incident_type }}">
-                {% if incident.incident_type == 'accident' %}<i class="bi bi-car-front"></i> VEHICLE ACCIDENT{% else %}<i class="bi bi-exclamation-diamond"></i> FIGHT INCIDENT{% endif %}
-            </span>
-            <h1>Incident #{{ incident.id }}</h1>
-
-            <div class="incident-meta">
-                <div class="meta-item">
-                    <div class="meta-label">Location</div>
-                    <div class="meta-value">{{ incident.location }}</div>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Timestamp</div>
-                    <div class="meta-value">{{ incident.timestamp }}</div>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Detected At</div>
-                    <div class="meta-value">{{ incident.detected_at|date:"M d, Y H:i" }}</div>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Status</div>
-                    <div class="meta-value">{{ incident.get_status_display }}</div>
-                </div>
-            </div>
-
-            {% if not incident.resolved %}
-            <button class="resolve-btn" onclick="resolveIncident({{ incident.id }})">
-                ✓ Mark as Resolved
-            </button>
-            {% endif %}
-        </div>
-
-        <div class="content-grid">
-            <div class="card">
-                <h3>📸 Incident Snapshot</h3>
-                {% if incident.snapshot %}
-                    <img src="{{ incident.snapshot.url }}" alt="Incident Snapshot" class="snapshot-img">
-                {% else %}
-                    <p>No snapshot available</p>
-                {% endif %}
-            </div>
-
-            {% if incident.incident_type == 'accident' %}
-            <div class="card">
-                <h3><i class="bi bi-car-front"></i> Vehicles Involved</h3>
-                <div class="vehicle-list">
-                    {% for vehicle in vehicles %}
-                        <div class="vehicle-card">
-                            <div class="plate-number">{{ vehicle.license_plate }}</div>
-                            <div><strong>Confidence:</strong> {{ vehicle.detection_confidence|floatformat:2 }}</div>
-                            <div><strong>OCR Scans:</strong> {{ vehicle.total_ocr_scans }}</div>
-                            <div><strong>Tracked in:</strong> {{ vehicle.detections.count }} camera(s)</div>
-                        </div>
-                    {% empty %}
-                        <p>No vehicles identified</p>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-        </div>
-
-        {% if incident.incident_type == 'accident' and vehicles %}
-            {% for vehicle in vehicles %}
-                {% if vehicle.route %}
-                <div class="route-map">
-                    <h3>🗺️ Route Map for {{ vehicle.license_plate }}</h3>
-                    <div class="route-timeline">
-                        {% for detection in vehicle.route %}
-                        <div class="route-item">
-                            <div class="route-marker">{{ forloop.counter }}</div>
-                            <div class="route-content">
-                                <div class="route-camera"><i class="bi bi-camera-reels"></i> {{ detection.camera.name }}</div>
-                                <div class="route-location"><i class="bi bi-geo-alt"></i>{{ detection.camera.location }}</div>
-                                <div class="route-time"><i class="bi bi-clock"></i>{{ detection.timestamp }}</div>
-                                <div><strong>Matched Text:</strong> {{ detection.matched_text }}</div>
-                                {% if detection.snapshot %}
-                                    <img src="{{ detection.snapshot.url }}" alt="Detection" class="route-snapshot">
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
+<div class="card incident-header">
+    <span class="incident-type-badge {{ incident.incident_type }}">
+        {% if incident.incident_type == 'accident' %}<i class="bi bi-car-front"></i> VEHICLE ACCIDENT{% else %}<i class="bi bi-exclamation-diamond"></i> FIGHT INCIDENT{% endif %}
+    </span>
+    <h1>Incident #{{ incident.id }}</h1>
+    <div class="incident-meta">
+        <div class="meta-item"><div class="meta-label">Location</div><div class="meta-value">{{ incident.location }}</div></div>
+        <div class="meta-item"><div class="meta-label">Timestamp</div><div class="meta-value">{{ incident.timestamp }}</div></div>
+        <div class="meta-item"><div class="meta-label">Detected At</div><div class="meta-value">{{ incident.detected_at|date:"M d, Y H:i" }}</div></div>
+        <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value">{{ incident.get_status_display }}</div></div>
     </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        {% if not incident.resolved %}
+        <button class="resolve-btn" onclick="resolveIncident({{ incident.id }})"><i class="bi bi-check-lg"></i> Mark as Resolved</button>
+        {% endif %}
+        <button class="download-btn" onclick="downloadReport()"><i class="bi bi-file-earmark-pdf"></i> Download PDF Report</button>
+    </div>
+</div>
 
-    <script>
-        function resolveIncident(incidentId) {
-            if (confirm('Mark this incident as resolved?')) {
-                fetch(`/api/incident/${incidentId}/resolve/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Incident marked as resolved');
-                        location.reload();
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            }
+<div id="reportContent">
+<div class="content-grid">
+    <div class="card detail-card">
+        <h3><i class="bi bi-camera"></i> Incident Snapshot</h3>
+        {% if incident.snapshot %}<img src="{{ incident.snapshot.url }}" alt="Incident Snapshot" class="snapshot-img">
+        {% else %}<p style="color: var(--text-secondary);">No snapshot available</p>{% endif %}
+    </div>
+    {% if incident.incident_type == 'accident' %}
+    <div class="card detail-card">
+        <h3><i class="bi bi-car-front"></i> Vehicles Involved</h3>
+        <div class="vehicle-list">
+            {% for vehicle in vehicles %}
+            <div class="vehicle-card">
+                <div class="plate-number">{{ vehicle.license_plate }}</div>
+                <div><strong>Confidence:</strong> {{ vehicle.detection_confidence|floatformat:2 }}</div>
+                <div><strong>OCR Scans:</strong> {{ vehicle.total_ocr_scans }}</div>
+                <div><strong>Tracked in:</strong> {{ vehicle.detections.count }} camera(s)</div>
+            </div>
+            {% empty %}<p style="color: var(--text-secondary);">No vehicles identified</p>{% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% if incident.incident_type == 'accident' and vehicles %}
+    {% for vehicle in vehicles %}{% if vehicle.route %}
+    <div class="card route-map">
+        <h3><i class="bi bi-map"></i> Route Map for {{ vehicle.license_plate }}</h3>
+        <div class="route-timeline">
+            {% for detection in vehicle.route %}
+            <div class="route-item">
+                <div class="route-marker">{{ forloop.counter }}</div>
+                <div class="route-content">
+                    <div class="route-camera"><i class="bi bi-camera-reels"></i> {{ detection.camera.name }}</div>
+                    <div class="route-location"><i class="bi bi-geo-alt"></i> {{ detection.camera.location }}</div>
+                    <div class="route-time"><i class="bi bi-clock"></i> {{ detection.timestamp }}</div>
+                    <div><strong>Matched:</strong> {{ detection.matched_text }}</div>
+                    {% if detection.snapshot %}<img src="{{ detection.snapshot.url }}" alt="Detection" class="route-snapshot">{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}{% endfor %}
+{% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    function resolveIncident(id) {
+        if (confirm('Mark this incident as resolved?')) {
+            fetch(`/api/incident/${id}/resolve/`, { method: 'POST', headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' } })
+            .then(r => r.json())
+            .then(data => { if (data.success) { alert('Incident resolved'); location.reload(); } })
+            .catch(e => console.error('Error:', e));
         }
-    </script>
-</body>
-</html>
+    }
+
+    function downloadReport() {
+        const element = document.getElementById('reportContent');
+        const opt = {
+            margin:       0.5,
+            filename:     `incident_report_${ {{ incident.id }} }.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
+</script>
+{% endblock %}
